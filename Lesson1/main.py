@@ -1,6 +1,8 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, g, request, flash
+import sqlite3, math, time
 
 app = Flask(__name__)
+app.config["SECRET_KEY"] = "wewrtrtey1223345dfgdf"
 
 menu = [{"name": "About", "link": "about"},
         {"name": "Projects", "link": "project"},
@@ -55,6 +57,48 @@ educations = [{"year": "2017", "item": "Mobile Web", "where": "Master Design",
                "comment": "You can freely use Tooplate's templates for your business or personal sites. You cannot "
                           "redistribute this template without a permission."},
               ]
+
+
+def connect_db():
+    connection = sqlite3.connect('my_database.db')
+    return connection
+
+
+def create_db():
+    db = connect_db()
+    with app.open_resource("sql_db.sql", mode="r") as f:
+        db.cursor().executescript(f.read())
+    db.commit()
+    db.close()
+
+
+def get_db():
+    if not hasattr(g, "link_db"):
+        g.link_db = connect_db()
+    return g.link_db
+
+
+@app.route('/submit', methods=['POST'])
+def submit():
+    create_db()
+    if request.method == "POST":
+        if len(request.form['name']) > 4 and len(request.form['message']) > 10:
+            res = (request.form['name'], request.form['email'], request.form['message'])
+            if not res:
+                flash("Ошибка добавления", category="error")
+            else:
+                flash("Успешно добавлено", category="success")
+        else:
+            flash("Ошибка добавления, проверьте ваши данные", category="error")
+    try:
+        db = get_db()
+        cur = db.cursor()
+        tm = math.floor(time.time())
+        cur.execute("INSERT INTO posts VALUES (NULL,?,?,?,?)", (res[0], res[1], res[2], tm))
+        db.commit()
+    except:
+        print("Error adding post")
+    return hello()
 
 
 @app.route('/')
