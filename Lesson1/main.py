@@ -96,6 +96,7 @@ def submit():
         tm = math.floor(time.time())
         cur.execute("INSERT INTO posts VALUES (NULL,?,?,?,?)", (res[0], res[1], res[2], tm))
         db.commit()
+        db.close()
     except:
         print("Error adding post")
     return hello()
