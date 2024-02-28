@@ -93,15 +93,15 @@ def hello():
         else:
             flash("Ошибка добавления, проверьте ваши данные", category="error")
             return redirect(url_for('hello'))
-    try:
-        db = get_db()
-        cur = db.cursor()
-        tm = math.floor(time.time())
-        cur.execute("INSERT INTO posts VALUES (NULL,?,?,?,?)", (res[0], res[1], res[2], tm))
-        db.commit()
-        return redirect(url_for('hello'))
-    except:
-        print("Error adding post")
+        try:
+            db = get_db()
+            cur = db.cursor()
+            tm = math.floor(time.time())
+            cur.execute("INSERT INTO posts VALUES (NULL,?,?,?,?)", (res[0], res[1], res[2], tm))
+            db.commit()
+            return redirect(url_for('hello'))
+        except:
+            print("Error adding post")
     return render_template('/index.html', menu=menu, owner=owner, project_foto=project_foto, experiences=experiences,
                            educations=educations, designer=designer)
 
