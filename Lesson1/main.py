@@ -1,5 +1,7 @@
-from flask import Flask, render_template, g, request, flash
-import sqlite3, math, time
+from flask import Flask, render_template, g, request, flash, redirect, url_for
+import sqlite3
+import math
+import time
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "wewrtrtey1223345dfgdf"
@@ -78,8 +80,8 @@ def get_db():
     return g.link_db
 
 
-@app.route('/submit', methods=['POST'])
-def submit():
+@app.route('/', methods=['GET', 'POST'])
+def hello():
     create_db()
     if request.method == "POST":
         if len(request.form['name']) > 4 and len(request.form['message']) > 10:
@@ -90,22 +92,24 @@ def submit():
                 flash("Успешно добавлено", category="success")
         else:
             flash("Ошибка добавления, проверьте ваши данные", category="error")
+            return redirect(url_for('hello'))
     try:
         db = get_db()
         cur = db.cursor()
         tm = math.floor(time.time())
         cur.execute("INSERT INTO posts VALUES (NULL,?,?,?,?)", (res[0], res[1], res[2], tm))
         db.commit()
-        db.close()
+        return redirect(url_for('hello'))
     except:
         print("Error adding post")
-    return hello()
-
-
-@app.route('/')
-def hello():
     return render_template('/index.html', menu=menu, owner=owner, project_foto=project_foto, experiences=experiences,
                            educations=educations, designer=designer)
+
+
+@app.teardown_appcontext
+def close_db(error):
+    if hasattr(g, "link_db"):
+        g.link_db.close()
 
 
 if __name__ == "__main__":
