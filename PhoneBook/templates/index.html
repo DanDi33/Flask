@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {{ super() }}
+    <hr>
+    <ul class="list-posts">
+        {%for key_comp,value_comp in res.items()%}
+            <li>
+                <p class="title">{{key_comp}}</p>
+
+                    {% for key_prof,value_prof in value_comp.items()%}
+                        <div class="annonce">
+                            <p>{{key_prof}}</p>
+                        {%for key_fio, value_fio in value_prof.items()%}
+                            <p>{{key_fio}}</p>
+                            {%for num, type in value_fio.items()%}
+                            <p>{{num}} ({{type[:3].lower()}}.)</p>
+                            {%endfor%}
+                        {%endfor%}
+                        </div>
+                    {%endfor%}
+
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}

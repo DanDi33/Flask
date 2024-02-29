@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {{ super() }}
+{% for cat,msg in get_flashed_messages(True) %}
+    <div class="flash {{cat}}">{{msg}}</div>
+{% endfor %}
+    <form action="/addnum" method="POST" class="form-contact">
+        <p>
+            <label>Компания:</label>
+            <select name="company" required>
+                <option disabled selected>Выберите компанию</option>
+                {% for company in comp_form %}
+                <option>{{company[1]}}</option>
+                {% endfor%}
+            </select>
+<!--            <input type="text" name="company" value="" required>-->
+        </p>
+         <p>
+            <label>Профессия:</label>
+            <select name="profession" required>
+                <option disabled selected>Выберите профессию</option>
+                {% for profession in prof_form %}
+                <option>{{profession[1]}}</option>
+                {% endfor%}
+            </select>
+        </p>
+         <p>
+            <label>Фамилия:</label>
+            <input type="text" name="surname" value="" required>
+        </p>
+        <p>
+            <label>Имя:</label>
+            <input type="text" name="name" value="" required>
+        </p>
+        <p>
+            <label>Отчество:</label>
+            <input type="text" name="patronymic" value="" required>
+        </p>
+          <p>
+            <label>Тип номера:</label>
+            <select name="type" required>
+                <option disabled selected>Выберите тип номера</option>
+                {% for type in type_form %}
+                <option>{{type[1]}}</option>
+                {% endfor%}
+            </select>
+        </p>
+        <p>
+            <label>Номер телефона:</label>
+            <input type="text" name="number" value="" required>
+        </p>
+        <p><input type="submit" value="Отправить"></p>
+    </form>
+{% endblock %}
