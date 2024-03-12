@@ -9,14 +9,21 @@
                 <p class="title">{{key_comp}}</p>
 
                     {% for key_prof,value_prof in value_comp.items()%}
-                        <div class="annonce">
-                            <p>{{key_prof}}</p>
-                        {%for key_fio, value_fio in value_prof.items()%}
-                            <p>{{key_fio}}</p>
-                            {%for num, type in value_fio.items()%}
-                            <p>{{num}} ({{type[:3].lower()}}.)</p>
-                            {%endfor%}
-                        {%endfor%}
+                        <div class="announce">
+                            <div class="col-1-3">
+                                <p>{{key_prof}}</p>
+                            </div>
+                            <div class="col-2-3">
+                                {%for key_fio, value_fio in value_prof.items()%}
+
+                                    <div class="col-1-2">{{key_fio}}</div>
+                                    <div class="col-1-2">
+                                    {%for num, type in value_fio.items()%}
+                                        <p>{{num}} ({{type[:3].lower()}}.)</p>
+                                    {%endfor%}
+                                    </div>
+                                {%endfor%}
+                            </div>
                         </div>
                     {%endfor%}
 

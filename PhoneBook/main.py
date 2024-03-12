@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, g, flash
+from flask import Flask, render_template, request, redirect, url_for, g, flash, session
 import sqlite3
 import os.path
 
@@ -8,7 +8,8 @@ app.config["SECRET_KEY"] = "wewrtrtey1223345dfgdf"
 menu = [
     {"title": "Main", "url": '/'},
     {"title": "Добавить номер", "url": '/addnum'},
-    {"title": "Добавить организацию", "url": '/addcompany'}
+    {"title": "Добавить организацию", "url": '/addcompany'},
+    {"title": "Добавить профессию", "url": '/addprof'}
 ]
 
 
@@ -77,19 +78,24 @@ def index():
     res = {}
     fio = {}
     professions = {}
-
     for i, el in enumerate(data):
+        # print(f"i = {i},el = {el}")
+        # print(f"el[0]={el[0]}, data[i-1][0]={data[i-1][0]}")
+        if el[0] != data[i - 1][0]:
+            fio = {}
+
         phones = fio.get(el[2], {})
         phones.update({el[4]: el[3]})
-        # print(f"fio[el[2]] = {fio.get(el[2], {})}")
+
         fio = professions.get(el[1], {})
         fio.update({el[2]: phones})
-        # print(f"professions[el[1]] = {professions.get(el[1], {})}")
+        # print(f"fio[el[2]] = {fio.get(el[2], {})}")
+
         professions = res.get(el[0], {})
         professions.update({el[1]: fio})
+        # print(f"professions[el[1]] = {professions.get(el[1], {})}")
         res.update({el[0]: professions})
         # print(f"res[el[0]] = {res.get(el[0], {})}")
-        # print(f"i = {i},el = {el}")
 
     # print(res)
     return render_template("index.html", menu=menu, title=title, data=data, res=res)
@@ -113,25 +119,119 @@ def add_num():
             res = (request.form['company'], request.form['profession'], request.form['type'], request.form['number'],
                    request.form['surname'], request.form['name'], request.form['patronymic'])
             print(res)
-            if not res:
-                flash("Ошибка добавления", category="error")
+            try:
+                db = get_db()
+                cur = db.cursor()
+                error = False
+
+                # Проверяю в БД название компании, если нет - добавляю. Возвращаю id
+                cur.execute("SELECT id FROM Companies WHERE companyName = ?",
+                            (res[0],))
+                company_id = cur.fetchone()
+                if company_id is None:
+                    cur.execute("INSERT INTO Companies (companyName) VALUES(?)",
+                                (res[0],))
+                    company_id = cur.lastrowid
+                    print(f"company_id(added) = {company_id}")
+                else:
+                    company_id = company_id[0]
+                    print(f"company_id(was) = {company_id}")
+
+                # Проверяю в БД название профессии, если нет - добавляю. Возвращаю id
+                cur.execute("SELECT id FROM Professions WHERE profession = ?",
+                            (res[1],))
+                profession_id = cur.fetchone()
+                if profession_id is None:
+                    cur.execute("INSERT INTO Professions (profession) VALUES(?)",
+                                (res[1],))
+                    profession_id = cur.lastrowid
+                    print(f"profession_id(added) = {profession_id}")
+                else:
+                    profession_id = profession_id[0]
+                    print(f"profession_id(was) = {profession_id}")
+
+                # Проверяю в БД полное совпадение ФИО, если нет - добавляю. Возвращаю id
+                cur.execute("SELECT id FROM FIO WHERE lastName=? and firstName=? and patronymic = ?",
+                            (res[4], res[5], res[6],))
+                fio_id = cur.fetchone()
+                if fio_id is None:
+                    cur.execute("INSERT INTO FIO (lastName,firstName,patronymic) VALUES(?,?,?)",
+                                (res[4], res[5], res[6],))
+                    fio_id = cur.lastrowid
+                    print(f"fio_id(added) = {fio_id}")
+                else:
+                    fio_id = fio_id[0]
+                    print(f"fio_id(was) = {fio_id}")
+
+                # Проверяю в БД сотрудника, если нет - добавляю. Возвращаю id
+                cur.execute("SELECT id FROM Workers WHERE fioId=? and professionId=? and companyId = ?",
+                            (fio_id, profession_id, company_id,))
+                worker_id = cur.fetchone()
+                if worker_id is None:
+                    cur.execute("INSERT INTO Workers (fioId, professionId, companyId) VALUES(?,?,?)",
+                                (fio_id, profession_id, company_id,))
+                    worker_id = cur.lastrowid
+                    print(f"worker_id(added) = {worker_id}")
+                else:
+                    worker_id = worker_id[0]
+                    print(f"worker_id(was) = {worker_id}")
+
+                # Проверяю в БД тип номера, если нет - добавляю. Возвращаю id
+                cur.execute("SELECT id FROM Types WHERE type=?",
+                            (res[2],))
+                type_id = cur.fetchone()
+                if type_id is None:
+                    cur.execute("INSERT INTO Types (type) VALUES(?)",
+                                (res[2],))
+                    type_id = cur.lastrowid
+                    print(f"type_id(added) = {type_id}")
+                else:
+                    type_id = type_id[0]
+                    print(f"type_id(was) = {type_id}")
+
+                # Проверяю в БД номер телефона, если нет - добавляю. Возвращаю id
+                cur.execute("SELECT id FROM Phones WHERE number = ?",
+                            (res[3],))
+                phone_id = cur.fetchone()
+                if phone_id is None:
+                    cur.execute("INSERT INTO Phones (typeId, number) VALUES(?,?)",
+                                (type_id, res[3],))
+                    phone_id = cur.lastrowid
+                    print(f"phone_id(added) = {phone_id}")
+                else:
+                    phone_id = phone_id[0]
+                    print(f"phone_id(was) = {phone_id}")
+
+                # Проверяю в БД с рабочим номером сотрудника, если нет - добавляю,
+                # если есть возвращаю error(Сотрудник существует)
+                cur.execute("SELECT id FROM WorkPhones WHERE workerId=? and phoneId=?",
+                            (worker_id, phone_id,))
+                work_phone_id = cur.fetchone()
+                if work_phone_id is None:
+                    cur.execute("INSERT INTO WorkPhones (workerId, phoneId) VALUES(?,?)",
+                                (worker_id, phone_id,))
+                    work_phone_id = cur.lastrowid
+                    print(f"work_phone_id(added) = {work_phone_id}")
+                else:
+                    work_phone_id = work_phone_id[0]
+                    print(f"work_phone_id(was) = {work_phone_id}")
+                    error = "Сотрудник с таким номером существует."
+
+                db.commit()
+                # return redirect(url_for("add_num"))
+            except Exception as e:
+                error = e
+                print("Error adding cotact", e)
+            if not res or error is not False:
+                flash(f"Ошибка добавления. {error}", category="error")
+                return redirect(url_for("add_num"))
             else:
                 flash("Успешно добавлено", category="success")
+                return redirect(url_for("add_num"))
         else:
             flash("Ошибка добавления, проверьте ваши данные", category="error")
             return redirect(url_for("add_num"))
-        try:
-            db = get_db()
-            cur = db.cursor()
 
-            # НУЖНО ДОПИСАТЬ СКРИПТ ДОБАВЛЕНИЯ КОНТАКТА
-            cur.execute("INSERT INTO Companies VALUES (NULL,?)", (res,))
-            db.commit()
-
-        except:
-            print("Error adding cotact")
-        finally:
-            return redirect(url_for("add_num"))
     return render_template("addnum.html", menu=menu, title=title, comp_form=comp_form, prof_form=prof_form,
                            type_form=type_form)
 
@@ -139,6 +239,49 @@ def add_num():
 @app.route("/addcompany", methods=["POST", "GET"])
 def add_company():
     title = "Добавление организации"
+    error = False
+    print(session.pop('_flashes', None))
+
+    if not os.path.exists("my_database.db"):
+        create_db()
+    if request.method == "POST":
+        if len(request.form['name']) > 2:
+            res = request.form['name']
+            print(res)
+            try:
+                db = get_db()
+                cur = db.cursor()
+                cur.execute("SELECT id FROM Companies WHERE companyName=?", (res,))
+                company_id = cur.fetchone()
+                if company_id is None:
+                    cur.execute("INSERT INTO Companies (companyName) VALUES(?)", (res,))
+                    company_id = cur.lastrowid
+                    print(f"company_id(added) = {company_id}")
+                else:
+                    company_id = company_id[0]
+                    print(f"company_id(was) = {company_id}")
+                    error = "Компания с таким названием уже существует."
+                db.commit()
+            except Exception as e:
+                error = e
+                print(f"Error adding post. {e}")
+            if not res or error is not False:
+                flash(f"Ошибка добавления. {error}", category="error")
+                # return redirect(url_for("add_company"))
+            else:
+                flash("Успешно добавлено", category="success")
+                return redirect(url_for("add_company"))
+        else:
+            flash("Ошибка добавления, проверьте ваши данные", category="error")
+            # return redirect(url_for("add_company"))
+
+    return render_template("addcompany.html", menu=menu, title=title)
+
+
+@app.route("/addprof", methods=["POST", "GET"])
+def add_profession():
+    title = "Добавление профессии"
+    error = False
 
     if not os.path.exists("my_database.db"):
         create_db()
@@ -146,22 +289,33 @@ def add_company():
         if len(request.form['name']) > 4:
             res = request.form['name']
             print(res)
-            if not res:
-                flash("Ошибка добавления", category="error")
+            try:
+                db = get_db()
+                cur = db.cursor()
+                cur.execute("SELECT id FROM Professions WHERE profession=?", (res,))
+                profession_id = cur.fetchone()
+                if profession_id is None:
+                    cur.execute("INSERT INTO Professions (profession) VALUES(?)", (res,))
+                    profession_id = cur.lastrowid
+                    print(f"profession_id(added) = {profession_id}")
+                else:
+                    profession_id = profession_id[0]
+                    print(f"profession_id(was) = {profession_id}")
+                    error = "Такая профессия уже существует."
+                db.commit()
+            except Exception as e:
+                error = e
+                print(f"Error adding profession. {e}")
+            if not res or error is not False:
+                flash(f"Ошибка добавления. {error}", category="error")
+                return redirect(url_for("add_profession"))
             else:
                 flash("Успешно добавлено", category="success")
+                return redirect(url_for("add_profession"))
         else:
             flash("Ошибка добавления, проверьте ваши данные", category="error")
-            return redirect(url_for("add_company"))
-        try:
-            db = get_db()
-            cur = db.cursor()
-            cur.execute("INSERT INTO Companies VALUES (NULL,?)", (res,))
-            db.commit()
-            return redirect(url_for("add_company"))
-        except:
-            print("Error adding post")
-    return render_template("addcompany.html", menu=menu, title=title)
+            return redirect(url_for("add_profession"))
+    return render_template("addprof.html", menu=menu, title=title)
 
 
 @app.teardown_appcontext
@@ -171,4 +325,5 @@ def close_db(error):
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host='192.168.1.65', debug=True)
+    # app.run(host='192.168.10.165', debug=True)
