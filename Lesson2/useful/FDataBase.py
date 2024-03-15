@@ -23,7 +23,7 @@ class FDataBase:
             print("Error get data from DataBase")
         return []
 
-    def addPost(self, site, author, title, description, url, urlToImage):
+    def addPost(self, site, author, title, description, urlToImage, url, text):
         if author is None:
             author = ""
         try:
@@ -33,8 +33,8 @@ class FDataBase:
                 print("Статья с данным url уже есть!")
                 return False
             tm = math.floor(time.time())
-            self.__cur.execute("INSERT INTO posts VALUES (NULL,?,?,?,?,?,?,?)", (site, author, title, description, url,
-                                                                                 urlToImage, tm))
+            self.__cur.execute("INSERT INTO posts VALUES (NULL,?,?,?,?,?,?,?,?)", (site, author, title, description, url,
+                                                                                 urlToImage, text, tm))
             self.__db.commit()
         except Exception as e:
             print(f"Error adding post. {e}")
@@ -61,16 +61,59 @@ class FDataBase:
 
     def getPost(self, alias):
         try:
-            self.__cur.execute(f"SELECT url FROM posts WHERE id LIKE ? LIMIT 1", (alias,))
+            self.__cur.execute(f"SELECT author, title, text, time FROM posts WHERE id LIKE ? LIMIT 1", (alias,))
             res = self.__cur.fetchone()
-            # print(res)
             if res:
-                print(res)
-                #         base = url_for('static', filename="img")
-                #         text = re.sub(r"(?P<tag><img\s+[^>]*src=)(?P<quote>[\"'])(?P<url>.+?)(?P=quote)>",
-                # "\\g<tag>"+base+"/\\g<url>>",
-                # res['text'])
-                return res
+                # print(res)
+                # base = url_for('static', filename="img")
+                # text = re.sub(r"(?P<tag><img\s+[^>]*src=)(?P<quote>[\"'])(?P<url>.+?)(?P=quote)>",
+                #               "\\g<tag>" + "/\\g<url>>",
+                #               res['text'])
+                timestamp = res['time']
+                dt_object = datetime.datetime.fromtimestamp(timestamp)
+                post_time = dt_object.strftime("%H:%M:%S, %d.%m.%Y")
+                return res['title'], res['text'], post_time, res['author']
         except sqlite3.Error as e:
             print(f"Ошибка при получении поста из БД. {e}")
+        return False, False, False, False
+
+    def addUser(self, name, email, hpsw):
+        try:
+            self.__cur.execute(f"SELECT count() as count FROM users WHERE email LIKE '{email}'")
+            res = self.__cur.fetchone()
+            if res['count'] > 0:
+                print("Такой пользователь уже есть")
+                return False
+            tm = math.floor(time.time())
+            self.__cur.execute("INSERT INTO users VALUES(NULL,?,?,?,NULL,?)", (name, email, hpsw, tm))
+            self.__db.commit()
+        except sqlite3.Error as e:
+            print("Ошибка добавления в БД" + str(e))
+
+            return False
+        return True
+
+    def getUser(self, user_id):
+        try:
+            self.__cur.execute(f"SELECT * FROM users WHERE id = {user_id} LIMIT 1")
+            res = self.__cur.fetchone()
+            if not res:
+                print("Пользователь не найден")
+                return False
+            return res
+        except sqlite3.Error as e:
+            print(f"Ошибка при получении информации о пользователе из БД. {e}")
+        return False
+
+    def getUserByEmail(self, email):
+        try:
+            self.__cur.execute(f"SELECT * FROM users WHERE email = '{email}' LIMIT 1")
+            res = self.__cur.fetchone()
+            if not res:
+                print("Пользователь не найден")
+                return False
+            print("Пользователь найден")
+            return res
+        except sqlite3.Error as e:
+            print(f"Ошибка при получении информации о пользователе из БД. {e}")
         return False
