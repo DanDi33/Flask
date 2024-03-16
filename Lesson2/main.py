@@ -100,7 +100,7 @@ def profile():
     return render_template("profile.html", menu=dbase.getMenu(), title="Профиль пользователя")
 
 
-@app.route('/logout', methods=['GET', 'POST'])
+@app.route('/logout')
 def logout():
     logout_user()
     flash("Вы вышли из аккаунта", "success")
@@ -139,7 +139,7 @@ def addPost():
 
 
 @app.route("/post/<alias>", methods=["GET", "POST"])
-# @login_required
+@login_required
 def showpost(alias):
     # print(dbase.getPost(alias)['url'])
     title, post, post_time, author = dbase.getPost(alias)
