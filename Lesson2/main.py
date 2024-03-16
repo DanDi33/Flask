@@ -18,7 +18,7 @@ app.config["SECRET_KEY"] = "wewrtrtey1223345dfgdf"
 dbase = None
 
 login_manager = LoginManager(app)
-login_manager.login_view = 'login'
+login_manager.login_view = 'no_founded'
 login_manager.login_message = 'Авторизируетесь для доступа к закрытым страницам'
 login_manager.login_message_category = 'success'
 
@@ -153,6 +153,11 @@ def showpost(alias):
 @app.errorhandler(404)
 def pageNotFounded(error):
     return render_template("page404.html", title="Страница не найдена")
+
+
+@app.route('/nofounded')
+def no_founded():
+    return render_template("nofounded.html", menu=dbase.getMenu(),title="Авторизуйтесь")
 
 
 @app.teardown_appcontext
