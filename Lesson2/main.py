@@ -18,7 +18,7 @@ app.config["SECRET_KEY"] = "wewrtrtey1223345dfgdf"
 dbase = None
 
 login_manager = LoginManager(app)
-login_manager.login_view = 'no_founded'
+login_manager.login_view = 'no_authorized'
 login_manager.login_message = 'Авторизируетесь для доступа к закрытым страницам'
 login_manager.login_message_category = 'success'
 
@@ -66,6 +66,7 @@ def login():
             userlogin = UserLogin().create(user)
             rm = True if request.form.get("remainme") else False
             login_user(userlogin, remember=rm)
+            print(request.args.get("next"))
             return redirect(request.args.get("next") or url_for('profile'))
         flash("Неверные данные  - логин")
 
@@ -85,7 +86,7 @@ def register():
             print(res)
             if res:
                 flash("Вы успешно зарегистрированы", category="success")
-                # return redirect(url_for('login'))
+                return redirect(url_for('index'))
             else:
                 flash("Ошибка при добавлении в БД", category="error")
         else:
@@ -104,7 +105,7 @@ def profile():
 def logout():
     logout_user()
     flash("Вы вышли из аккаунта", "success")
-    return redirect(url_for("index"))
+    return redirect(url_for("no_authorized"))
 
 
 @app.route("/")
@@ -155,9 +156,9 @@ def pageNotFounded(error):
     return render_template("page404.html", title="Страница не найдена")
 
 
-@app.route('/nofounded')
-def no_founded():
-    return render_template("nofounded.html", menu=dbase.getMenu(),title="Авторизуйтесь")
+@app.route('/noauthorized')
+def no_authorized():
+    return render_template("no_authorized.html", menu=dbase.getMenu(), title="Авторизуйтесь")
 
 
 @app.teardown_appcontext
