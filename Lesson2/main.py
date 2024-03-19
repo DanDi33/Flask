@@ -1,8 +1,5 @@
-import math
 import os
 import sqlite3
-import json
-import time
 
 from flask_login import login_required, LoginManager, current_user, login_user, logout_user
 from newsapi import NewsApiClient
@@ -52,7 +49,6 @@ def create_db():
 
 @login_manager.user_loader
 def load_user(user_id):
-    print("load_user")
     return UserLogin().fromDB(user_id, dbase)
 
 
@@ -66,11 +62,11 @@ def login():
             userlogin = UserLogin().create(user)
             rm = True if request.form.get("remainme") else False
             login_user(userlogin, remember=rm)
-            print(request.args.get("next"))
             return redirect(request.cookies.get("next") or url_for('profile'))
         flash("Неверные данные  - логин")
 
-    return render_template("index.html", menu=dbase.getMenu(), title="Авторизация")
+    return render_template("index.html", menu=dbase.getMenu(),
+                           title="Авторизация")
 
 
 @app.route("/register", methods=["POST", "GET"])
@@ -92,14 +88,16 @@ def register():
         else:
             flash("Неверно заполнены поля", category="error")
 
-    return render_template("index.html", menu=dbase.getMenu(), title="Регистрация")
+    return render_template("index.html", menu=dbase.getMenu(),
+                           title="Регистрация")
 
 
 @app.route('/profile')
 @login_required
 def profile():
     name = current_user.getName()
-    return render_template("profile.html", menu=dbase.getMenu(), name=name, title="Профиль пользователя")
+    return render_template("profile.html", menu=dbase.getMenu(), name=name,
+                           title="Профиль пользователя")
 
 
 @app.route('/userava')
@@ -147,7 +145,8 @@ def index():
     if not os.path.exists("lesson2_DB.db"):
         create_db()
     # get_news("cat")
-    return render_template("index.html", menu=dbase.getMenu(), title="Index page", posts=dbase.getPostAnonce())
+    return render_template("index.html", menu=dbase.getMenu(),
+                           title="Index page", posts=dbase.getPostAnonce())
 
 
 @app.route("/add_post", methods=["GET", "POST"])
@@ -170,15 +169,14 @@ def addPost():
                 flash("Успешно добавлено", category="success")
         else:
             flash("Ошибка добавления, проверьте ваши данные", category="error")
-    return render_template("add_post.html", menu=dbase.getMenu(), title="Добавление статьи")
+    return render_template("add_post.html", menu=dbase.getMenu(),
+                           title="Добавление статьи")
 
 
 @app.route("/post/<alias>", methods=["GET", "POST"])
 @login_required
 def showpost(alias):
-    # print(dbase.getPost(alias)['url'])
     title, post, post_time, author = dbase.getPost(alias)
-    # print(post)
     if not title:
         abort(404)
     return render_template("showpost.html", menu=dbase.getMenu(), title=title, post=post,
@@ -192,7 +190,8 @@ def pageNotFounded(error):
 
 @app.route('/noauthorized')
 def no_authorized():
-    resp = make_response(render_template("no_authorized.html", menu=dbase.getMenu(), title="Авторизуйтесь"))
+    resp = make_response(render_template("no_authorized.html", menu=dbase.getMenu(),
+                                         title="Авторизуйтесь"))
     if request.args.get('next'):
         resp.set_cookie('next', request.args.get('next'))
     return resp

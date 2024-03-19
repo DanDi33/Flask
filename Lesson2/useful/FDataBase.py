@@ -1,10 +1,7 @@
 import math
-import re
 import sqlite3
 import time
 import datetime
-
-from flask import url_for
 
 
 class FDataBase:
@@ -33,8 +30,9 @@ class FDataBase:
                 print("Статья с данным url уже есть!")
                 return False
             tm = math.floor(time.time())
-            self.__cur.execute("INSERT INTO posts VALUES (NULL,?,?,?,?,?,?,?,?)", (site, author, title, description, url,
-                                                                                 urlToImage, text, tm))
+            self.__cur.execute("INSERT INTO posts VALUES (NULL,?,?,?,?,?,?,?,?)",
+                               (site, author, title, description, url,
+                                urlToImage, text, tm))
             self.__db.commit()
         except Exception as e:
             print(f"Error adding post. {e}")
@@ -53,7 +51,6 @@ class FDataBase:
                     res_arr.append({'id': el['id'], 'title': el['title'], 'description': el['description'],
                                     'url': el['url'], 'urlToImage': el['urlToImage'],
                                     'time': dt_object.strftime("%H:%M:%S, %d.%m.%Y")})
-                # print(res_arr)
                 return res_arr
         except sqlite3.Error as e:
             print(f"Ошибка при получении постов из БД. {e}")
@@ -89,7 +86,6 @@ class FDataBase:
             self.__db.commit()
         except sqlite3.Error as e:
             print("Ошибка добавления в БД" + str(e))
-
             return False
         return True
 

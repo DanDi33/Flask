@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru" class="h-100 translated-ltr">
 
 <head>
   <meta charset="UTF-8">
@@ -15,7 +15,7 @@
   {% endblock %}
 </head>
 
-<body>
+<body class="d-flex flex-column h-100">
   {% block content%}
   {%- block mainmenu-%}
   <nav class="navbar navbar-expand-lg bg-body-secondary">
@@ -147,7 +147,18 @@
   {% endblock mainmenu%}
 
   {%endblock%}
+<footer class="footer bg-body-secondary mt-auto">
+          <div class="container-fluid">
+               <div class="row">
 
+                    <div class="col-lg-11 col-11">
+                        <p class="copyright-text text-center">Copyright &copy; 2024 DanDi's Company. All rights reserved</p>
+                        <p class="copyright-text text-center">Designed by <a rel="nofollow" href="#">Danilov Dmitry</a></p>
+                    </div>
+
+               </div>
+          </div>
+     </footer>
   <script>
     var myModal = document.getElementById('myModal')
     var myInput = document.getElementById('myInput')
