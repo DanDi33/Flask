@@ -20,7 +20,6 @@
   {%- block mainmenu-%}
   <nav class="navbar navbar-expand-lg bg-body-secondary">
     <div class="container-fluid">
-      <!--    <a class="navbar-brand" href="#">Navbar w/ text</a>-->
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText"
         aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -44,13 +43,10 @@
         <span class="navbar-text">
           <!--        Navbar text with an inline element-->
           {% if current_user.is_authenticated %}
-<!--              <a href="{{ url_for('login') }}">Login</a>-->
             <a class="nav-link" href='/logout'>Выйти</a>
           {% else %}
             <a class="nav-link" data-bs-toggle="modal" data-bs-target="#AuthorizationModal" id="authorizationClick" href="/">Авторизация</a>
-
           {% endif %}
-<!--          <a class="nav-link" data-bs-toggle="modal" data-bs-target="#exampleModal" href="/">Авторизация</a>-->
         </span>
 
       </div>
@@ -67,7 +63,6 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
         </div>
         <div class="modal-body">
-
           <form action="/login" method="post">
             <div class="mb-3">
               <label for="AuthorizationInputEmail" class="form-label">Адрес электронной почты</label>
@@ -92,9 +87,7 @@
               <button type="submit" class="btn btn-primary">Войти</button>
             </div>
           </form>
-
         </div>
-
       </div>
     </div>
   </div>
@@ -108,7 +101,6 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
         </div>
         <div class="modal-body">
-
           <form action="/register" method="post">
             <div class="mb-3">
               <label for="RegisterName" class="form-label">Имя</label>
@@ -128,17 +120,12 @@
               <label for="RegisterPassword2" class="form-label">Повторить пароль</label>
               <input type="password" class="form-control" id="RegisterPassword2" name="psw2" required>
             </div>
-
-<!--            {% for cat,msg in get_flashed_messages(True) %}-->
-<!--              <div class="flash {{cat}}">{{msg}}</div>-->
-<!--            {% endfor %}-->
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-bs-toggle="modal"
                     data-bs-target="#AuthorizationModal">Авторизация</button>
               <button type="submit" class="btn btn-primary">Сохранить изменения</button>
             </div>
           </form>
-
         </div>
       </div>
     </div>
@@ -147,18 +134,18 @@
   {% endblock mainmenu%}
 
   {%endblock%}
+
 <footer class="footer bg-body-secondary mt-auto">
           <div class="container-fluid">
                <div class="row">
-
                     <div class="col-lg-11 col-11">
                         <p class="copyright-text text-center">Copyright &copy; 2024 DanDi's Company. All rights reserved</p>
                         <p class="copyright-text text-center">Designed by <a rel="nofollow" href="#">Danilov Dmitry</a></p>
                     </div>
-
                </div>
           </div>
      </footer>
+
   <script>
     var myModal = document.getElementById('myModal')
     var myInput = document.getElementById('myInput')
@@ -172,5 +159,4 @@
     crossorigin="anonymous"></script>
 
 </body>
-
 </html>

@@ -5,7 +5,6 @@
 {% for cat,msg in get_flashed_messages(True) %}
 <div class="flash {{cat}}">{{msg}}</div>
 {% endfor %}
-<main class="flex-shrink-0">
 <h3 style="text-align:center; margin:10px 0;">Ваш профиль</h3>
 <div class="card container p-0">
   <div class="card-body">
@@ -31,5 +30,4 @@
     </form>
   </div>
 </div>
-</main>
 {% endblock %}
