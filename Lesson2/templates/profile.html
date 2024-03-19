@@ -5,41 +5,30 @@
 {% for cat,msg in get_flashed_messages(True) %}
 <div class="flash {{cat}}">{{msg}}</div>
 {% endfor %}
-
-<div class="card w-50">
+<h3 style="text-align:center; margin:10px 0;">Ваш профиль</h3>
+<div class="card container p-0">
   <div class="card-body">
-    <h5 class="card-title">Профиль, {{current_user.getName()}}</h5>
-    <p class="card-text">С вспомогательным текстом ниже в качестве естественного перехода к дополнительному контенту.</p>
-
-
-    <div class="modal-footer">
-              <button type="submit" class="btn btn-primary">Загрузить</button>
-            </div>
-  </div>
-
-</div>
-
-<div class="container">
-  <h1 class="modal-title">Profile</h1>
-  <div class="row row-cols-auto">
-    <div class="col p-2">
-      <div class="profile-ava"><img src="{{url_for('userava')}}"></div>
-    </div>
-    <div class="col col-lg-3">
-      <div class="mb-3">
-        <label for="formFile" class="form-label">Пример ввода файла по умолчанию</label>
-        <input class="form-control" type="file" id="formFile">
-      </div>
-      <div class="profile-load">
-        <form action="/upload" method="POST" enctype="multipart/form-data">
+    <h5 class="card-title p-2">Здравствуй, {{current_user.getName()}}</h5>
+    <form action="/upload" method="POST" enctype="multipart/form-data">
+      <div class="row">
+        <div class="col col-sm-3 col-md-3 col-lg-3 p-2 profile-ava"><img src="{{url_for('userava')}}"></div>
+        <div class="col col-sm-9 col-md-9 col-lg-9">
+          <div class="row">
+            <div class="col col-3 text-end">Имя:</div>
+            <div class="col text-start">{{current_user.getName()}}</div>
+          </div>
+          <div class="row">
+            <div class="col col-3 text-end">Email:</div>
+            <div class="col text-start">{{current_user.getEmail()}}</div>
+          </div>
           <input type="file" name="file">
-          <input type="submit" value="Загрузить">
-        </form>
+        </div>
       </div>
-    </div>
-    <!--    <div class="col">-->
-    <!--      Колонка-->
-    <!--    </div>-->
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">Загрузить</button>
+      </div>
+    </form>
   </div>
 </div>
+
 {% endblock %}

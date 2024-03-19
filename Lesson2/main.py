@@ -113,6 +113,26 @@ def userava():
     return answer
 
 
+@app.route('/upload', methods=["POST", "GET"])
+@login_required
+def upload():
+    if request.method == "POST":
+        file = request.files['file']
+        if file:
+            try:
+                img = file.read()
+                res = dbase.updateUserAvatar(img, current_user.get_id())
+                if not res:
+                    flash("Ошибка обновления аватара", "error")
+                    return redirect(url_for("profile"))
+                flash("Аватар обновлен", "success")
+            except FileNotFoundError as e:
+                flash("Ошибка чтения файла", "error")
+        else:
+            flash("Ошибка чтения файлабновления аватара", "error")
+    return redirect(url_for("profile"))
+
+
 @app.route('/logout')
 def logout():
     logout_user()
@@ -120,6 +140,7 @@ def logout():
     resp = make_response(redirect(url_for("no_authorized")))
     resp.delete_cookie('next')
     return resp
+
 
 @app.route("/")
 def index():
