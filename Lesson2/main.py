@@ -6,7 +6,7 @@ import time
 
 from flask_login import login_required, LoginManager, current_user, login_user, logout_user
 from newsapi import NewsApiClient
-from flask import Flask, render_template, g, request, flash, redirect, url_for, session, abort
+from flask import Flask, render_template, g, request, flash, redirect, url_for, session, abort, make_response
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from useful.FDataBase import FDataBase
@@ -67,7 +67,7 @@ def login():
             rm = True if request.form.get("remainme") else False
             login_user(userlogin, remember=rm)
             print(request.args.get("next"))
-            return redirect(request.args.get("next") or url_for('profile'))
+            return redirect(request.cookies.get("next") or url_for('profile'))
         flash("Неверные данные  - логин")
 
     return render_template("index.html", menu=dbase.getMenu(), title="Авторизация")
@@ -98,15 +98,28 @@ def register():
 @app.route('/profile')
 @login_required
 def profile():
-    return render_template("profile.html", menu=dbase.getMenu(), title="Профиль пользователя")
+    name = current_user.getName()
+    return render_template("profile.html", menu=dbase.getMenu(), name=name, title="Профиль пользователя")
+
+
+@app.route('/userava')
+@login_required
+def userava():
+    img = current_user.getAvatar(app)
+    if not img:
+        return ""
+    answer = make_response(img)
+    answer.headers["Content-Type"] = "image/png"
+    return answer
 
 
 @app.route('/logout')
 def logout():
     logout_user()
     flash("Вы вышли из аккаунта", "success")
-    return redirect(url_for("no_authorized"))
-
+    resp = make_response(redirect(url_for("no_authorized")))
+    resp.delete_cookie('next')
+    return resp
 
 @app.route("/")
 def index():
@@ -158,7 +171,10 @@ def pageNotFounded(error):
 
 @app.route('/noauthorized')
 def no_authorized():
-    return render_template("no_authorized.html", menu=dbase.getMenu(), title="Авторизуйтесь")
+    resp = make_response(render_template("no_authorized.html", menu=dbase.getMenu(), title="Авторизуйтесь"))
+    if request.args.get('next'):
+        resp.set_cookie('next', request.args.get('next'))
+    return resp
 
 
 @app.teardown_appcontext

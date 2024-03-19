@@ -1,11 +1,12 @@
-.card:hover {
+.card.h-100:hover {
     cursor: pointer;
     background-color: rgb(216, 216, 216);
     -webkit-box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
     -moz-box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
     box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
 }
-.card:active{
+
+.card.h-100:active {
     -webkit-box-shadow: 5px 5px 5px -5px rgba(34, 60, 80, 0.6) inset;
     -moz-box-shadow: 5px 5px 5px -5px rgba(34, 60, 80, 0.6) inset;
     box-shadow: 5px 5px 5px -5px rgba(34, 60, 80, 0.6) inset;
@@ -19,6 +20,7 @@
     text-align: right;
     color: gray;
 }
+
 .container-showpost .author {
     text-align: right;
 }
@@ -31,15 +33,30 @@
     border-radius: 8px;
 }
 
-.flash{
-    padding:15px;
-    border-radius:10px;
+.flash {
+    padding: 15px;
+    border-radius: 10px;
 }
-.flash.success{
-    border:1px solid #21DB56;
+
+.flash.success {
+    border: 1px solid #21DB56;
     background: #AEFFC5;
 }
-.flash.error{
-    border:1px solid #FF4343;
+
+.flash.error {
+    border: 1px solid #FF4343;
     background: #FF9C9C;
+}
+
+.container {
+    /* max-width: 650px; */
+    border-radius: 10px;
+    background-color: gray;
+}
+
+.profile-ava img {
+    max-width: 130px;
+    /* margin:5px; */
+    height: auto;
+    border-radius: 10px;
 }

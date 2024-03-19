@@ -1,9 +1,45 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    {{ super() }}
+{{ super() }}
 {% for cat,msg in get_flashed_messages(True) %}
-    <div class="flash {{cat}}">{{msg}}</div>
+<div class="flash {{cat}}">{{msg}}</div>
 {% endfor %}
-<h1>Profile</h1>
+
+<div class="card w-50">
+  <div class="card-body">
+    <h5 class="card-title">Профиль, {{current_user.getName()}}</h5>
+    <p class="card-text">С вспомогательным текстом ниже в качестве естественного перехода к дополнительному контенту.</p>
+
+
+    <div class="modal-footer">
+              <button type="submit" class="btn btn-primary">Загрузить</button>
+            </div>
+  </div>
+
+</div>
+
+<div class="container">
+  <h1 class="modal-title">Profile</h1>
+  <div class="row row-cols-auto">
+    <div class="col p-2">
+      <div class="profile-ava"><img src="{{url_for('userava')}}"></div>
+    </div>
+    <div class="col col-lg-3">
+      <div class="mb-3">
+        <label for="formFile" class="form-label">Пример ввода файла по умолчанию</label>
+        <input class="form-control" type="file" id="formFile">
+      </div>
+      <div class="profile-load">
+        <form action="/upload" method="POST" enctype="multipart/form-data">
+          <input type="file" name="file">
+          <input type="submit" value="Загрузить">
+        </form>
+      </div>
+    </div>
+    <!--    <div class="col">-->
+    <!--      Колонка-->
+    <!--    </div>-->
+  </div>
+</div>
 {% endblock %}
