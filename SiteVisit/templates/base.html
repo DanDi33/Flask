@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+  <link type="text/css" href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+    {% block title %}
+  {% if title %}
+  <title>{{title}}</title>
+  {% else %}
+  <title>Flask site</title>
+  {% endif %}
+  {% endblock %}
+</head>
+<body>
+{% block content%}
+{%endblock%}
+<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+</body>
+</html>
