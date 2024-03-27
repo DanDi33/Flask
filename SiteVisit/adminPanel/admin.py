@@ -64,8 +64,8 @@ def index():
                             f"'surname' = ?, "
                             f"'phone' = ?, "
                             f"'profession' = ?, "
-                            f"'about' = "
-                            f"?, 'social' = ? "
+                            f"'about' = ?, "
+                            f"'social' = ? "
                             f"WHERE id LIKE ?;", (form.name.data,
                                                   form.surname.data,
                                                   form.phone.data,
