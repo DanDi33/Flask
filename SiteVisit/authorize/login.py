@@ -1,3 +1,4 @@
+import json
 import math
 import time
 from flask import Blueprint, render_template, redirect, url_for, flash, session, g
@@ -39,9 +40,10 @@ def register():
                     print("Такой пользователь уже есть")
                     return redirect(url_for('authorize.register'))
                 tm = math.floor(time.time())
+                arr=[]
                 cur.execute("INSERT INTO users VALUES(NULL,?,?,?)", (form.name.data, hash, tm))
                 cur.execute("INSERT INTO profiles VALUES(NULL,?,NULL,NULL,NULL,?,"
-                            "NULL,NULL,NULL,NULL)", (form.name.data, form.email.data))
+                            "NULL,NULL,NULL,?)", (form.name.data, form.email.data, json.dumps(arr)))
                 db.commit()
                 if res:
                     flash("Вы успешно зарегистрированы", category="success")
@@ -55,7 +57,7 @@ def register():
     return render_template("authorize/register.html", title="Регистрация", form=form)
 
 
-@user.route("/")
+@user.route("/", methods=["POST", "GET"])
 @user.route("/login", methods=["POST", "GET"])
 def login():
     user_db = None
@@ -76,8 +78,7 @@ def login():
             session['id'] = user_db[0]['id']
             session['name'] = user_db[0]['name']
             session['psw'] = user_db[0]['psw']
-            print(session)
-            print("Пользователь найден")
+            print(f"Пользователь {session['name']} вошёл в аккаунт (authorize/login.py def login).")
             return redirect(url_for('adminPanel.index'))
         flash("Неверные данные  - логин", "error")
 
@@ -94,6 +95,7 @@ def logout():
     if not isLogged():
         return redirect(url_for('.login'))
     session.pop('id', None)
-    session.pop('name', None)
+    name = session.pop('name', None)
     session.pop('psw', None)
+    print(f"Пользователь {name} вышел из аккаунта (authorize/login.py def logout). ")
     return redirect(url_for('.login'))

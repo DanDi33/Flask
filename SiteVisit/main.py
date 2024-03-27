@@ -1,11 +1,16 @@
+import os
 import sqlite3
-from flask import Flask, render_template, g, abort, make_response, url_for
+from flask import Flask, render_template, g, abort, make_response, url_for, json
 from useful.FDataBase import FDataBase
 from authorize.login import user
 from adminPanel.admin import admin
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "wewrtrtey1223345dfgdf"
+app.config['MAX_CONTENT_LENGTH'] = 5 * 1024 * 1024
+app.config['UPLOAD_EXTENSIONS'] = ['.jpg', '.png', '.gif']
+app.config['UPLOAD_FOLDER'] = "/static/img"
+
 app.register_blueprint(user, url_prefix="/user")
 app.register_blueprint(admin, url_prefix="/admin")
 
@@ -55,6 +60,8 @@ def userava():
 
 @app.route("/")
 def index():
+    if not os.path.exists("lesson2_DB.db"):
+        create_db()
     default_res = dict()
     (default_res['name'], default_res['surname'], default_res['email'],
      default_res['phone'], default_res['profession'], default_res['about'],
@@ -79,7 +86,7 @@ def index():
 def showpost(alias):
     res = dict()
     (res['user_name'], res['name'], res['surname'], res['email'],
-     res['phone'], res['profession'], res['about']) = dbase.get_profile(alias)
+     res['phone'], res['profession'], res['about'], res['social']) = dbase.get_profile(alias)
     if not res['user_name']:
         abort(404)
     if not res['name']:
@@ -109,5 +116,5 @@ def close_db(error):
 
 
 if __name__ == "__main__":
-    create_db()
+    # create_db()
     app.run(debug=True)

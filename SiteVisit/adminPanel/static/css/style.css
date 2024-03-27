@@ -70,3 +70,12 @@ body {
     cursor: pointer;
     border: solid 1px #BA68C8
 }
+
+.form-contact .invalid{
+  display: inline-block;
+  background-color: #ff9898;
+}
+
+.form-contact .invalid-feedback {
+  color: #CC0000;
+}

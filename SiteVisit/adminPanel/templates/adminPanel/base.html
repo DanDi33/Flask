@@ -30,6 +30,43 @@
   </div>
 </nav>
 {%endif%}
+<div class="modal fade" id="AuthorizationModal" tabindex="-1" aria-labelledby="exampleModalLabelAuthorization"
+    aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabelAuthorization">Авторизация</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+        </div>
+        <div class="modal-body">
+          <form action="/login" method="post">
+            <div class="mb-3">
+              <label for="AuthorizationInputEmail" class="form-label">Адрес электронной почты</label>
+              <input type="email" class="form-control" id="AuthorizationInputEmail" aria-describedby="AuthorizationEmailHelp" name="email"
+                required>
+              <div id="AuthorizationEmailHelp" class="form-text">Мы никогда никому не передадим вашу электронную почту.</div>
+            </div>
+            <div class="mb-3">
+              <label for="AuthorizationInputPassword" class="form-label">Пароль</label>
+              <input type="password" class="form-control" id="AuthorizationInputPassword" name="psw" required>
+            </div>
+            <div class="mb-3 form-check">
+              <input type="checkbox" class="form-check-input" id="AuthorizationCheck" name="remainme">
+              <label class="form-check-label" for="AuthorizationCheck">Запомни меня</label>
+            </div>
+            {% for cat,msg in get_flashed_messages(True) %}
+                <div class="flash {{cat}}">{{msg}}</div>
+            {% endfor %}
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-bs-toggle="modal"
+                data-bs-target="#RegisterModal">Регистрация</button>
+              <button type="submit" class="btn btn-primary">Войти</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
 {%block content%}
 {% endblock %}
 </body>

@@ -1,5 +1,7 @@
 import sqlite3
 
+from flask import json
+
 
 class FDataBase:
     def __init__(self, db):
@@ -11,10 +13,11 @@ class FDataBase:
             self.__cur.execute(f"SELECT * FROM profiles WHERE user_name LIKE ? LIMIT 1", (alias,))
             res = self.__cur.fetchone()
             if res:
-                return res['user_name'], res['name'], res['surname'], res['email'], res['phone'], res['profession'], res['about']
+                return (res['user_name'], res['name'], res['surname'], res['email'], res['phone'],
+                        res['profession'], res['about'], json.loads(res['social']))
         except sqlite3.Error as e:
             print(f"Ошибка при получении поста из БД. {e}")
-        return False, False, False, False, False, False, False
+        return False, False, False, False, False, False, False, False
 
     def updateUserAvatar(self, img, user_id):
         if not img:
