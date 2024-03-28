@@ -8,8 +8,9 @@ from adminPanel.admin import admin
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "wewrtrtey1223345dfgdf"
 app.config['MAX_CONTENT_LENGTH'] = 5 * 1024 * 1024
-app.config['UPLOAD_EXTENSIONS'] = ['.jpg', '.png', '.gif']
-app.config['UPLOAD_FOLDER'] = "/static/img"
+# app.config['UPLOAD_EXTENSIONS'] = ['.jpg', '.png', '.gif']
+app.config['UPLOAD_FOLDER'] = 'uploads'
+
 
 app.register_blueprint(user, url_prefix="/user")
 app.register_blueprint(admin, url_prefix="/admin")
@@ -86,7 +87,10 @@ def index():
 def showpost(alias):
     res = dict()
     (res['user_name'], res['name'], res['surname'], res['email'],
-     res['phone'], res['profession'], res['about'], res['social']) = dbase.get_profile(alias)
+     res['phone'], res['profession'], res['about'], res['social'], res['avatar']) = dbase.get_profile(alias)
+    # image_binary = read_image(res['avatar'])
+    # response = make_response(image_binary)
+    # response.headers.set('Content-Type', 'image/jpeg')
     if not res['user_name']:
         abort(404)
     if not res['name']:

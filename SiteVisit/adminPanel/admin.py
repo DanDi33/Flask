@@ -1,12 +1,13 @@
 import os
+from PIL import Image
 
-from flask import Blueprint, render_template, redirect, url_for, flash, session, g, json
+import flask
+from flask import Blueprint, render_template, redirect, url_for, flash, session, g, json, make_response
 import sqlite3
 
 from werkzeug.utils import secure_filename
 
 from SiteVisit.adminPanel.useful.forms import ProfileForm
-
 
 admin = Blueprint('adminPanel', __name__, template_folder='templates', static_folder='static')
 menu = [{"url": ".index", "title": "Панель"}, {"url": "authorize.logout", "title": "Выйти"}]
@@ -57,6 +58,17 @@ def index():
         print(profile['id'])
         file = form.avatar.data
         upload_avatar(file, profile['id'])
+        image = form.avatar.data
+        filename = secure_filename(image)
+        os.makedirs(flask.current_app.config['UPLOAD_FOLDER'], exist_ok=True)
+        im = Image.open(image)
+        im_new = crop_max_square(im)
+        im_new.save(os.path.join(flask.current_app.config['UPLOAD_FOLDER'], filename), quality=95)
+
+        # ima = Image.open(image)
+        # im_new = crop_max_square(ima)
+        # im_new.save(os.path.join(flask.current_app.config['UPLOAD_FOLDER'], '111.jpg'), quality=95)
+
         if db:
             try:
                 cur = db.cursor()
@@ -106,13 +118,15 @@ def select_user(user_name):
 def upload_avatar(file, person_id):
     if file:
         try:
-            img = file.read()
+            with open(file, "rb") as f:
+                img = f.read()
             res = update_user_avatar(img, person_id)
             if not res:
                 flash("Ошибка обновления аватара", "error")
                 return redirect(url_for("adminPanel.index"))
             flash("Аватар обновлен", "success")
         except FileNotFoundError as e:
+            print(f"Ошибка чтения файла ({file}). {e} (adminPanel/admin.py def upload_avatar).")
             flash("Ошибка чтения файла", "error")
     else:
         print(f"{file} - файл не найден. (adminPanel/admin.py def upload_avatar).")
@@ -135,6 +149,33 @@ def update_user_avatar(img, user_id):
         print(f"Ошибка обновления аватара. (adminPanel/admin.py def update_user_avatar). {e}")
         return False
     return True
+
+
+@admin.route("/userava")
+def userava():
+    print("user_ava")
+    profile = select_user(session['name'])
+    img = profile['avatar']
+    if not img:
+        return ""
+    answer = make_response(img)
+    answer.headers["Content-Type"] = "image/png"
+    return answer
+
+
+def crop_center(pil_img, crop_width: int, crop_height: int) -> Image:
+    """
+    Функция для обрезки изображения по центру.
+    """
+    img_width, img_height = pil_img.size
+    return pil_img.crop(((img_width - crop_width) // 2,
+                         (img_height - crop_height) // 2,
+                         (img_width + crop_width) // 2,
+                         (img_height + crop_height) // 2))
+
+
+def crop_max_square(pil_img):
+    return crop_center(pil_img, min(pil_img.size), min(pil_img.size))
 
 
 def isLogged():

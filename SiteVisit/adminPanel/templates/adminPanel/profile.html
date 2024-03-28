@@ -30,7 +30,8 @@
                                     <img class="rounded-circle mt-5" width="150px" style="cursor: pointer;"
                                         src="{{url_for('static', filename='/img/profile-image.jpg')}}"  onclick='avatar.click()'>
                                 {% else%}
-
+                                    <img class="rounded-circle mt-5" width="150px" style="cursor: pointer;"
+                                        src="{{url_for('.userava')}}"  onclick='avatar.click()'>
                                 {%endif%}
                                 {{form.avatar(class_="form-control", style_="display:none")}}
                             {%endif%}

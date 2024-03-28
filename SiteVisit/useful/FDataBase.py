@@ -14,10 +14,10 @@ class FDataBase:
             res = self.__cur.fetchone()
             if res:
                 return (res['user_name'], res['name'], res['surname'], res['email'], res['phone'],
-                        res['profession'], res['about'], json.loads(res['social']))
+                        res['profession'], res['about'], json.loads(res['social']), res['avatar'])
         except sqlite3.Error as e:
             print(f"Ошибка при получении поста из БД. {e}")
-        return False, False, False, False, False, False, False, False
+        return False, False, False, False, False, False, False, False, False
 
     def updateUserAvatar(self, img, user_id):
         if not img:
