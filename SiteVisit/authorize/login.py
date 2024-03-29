@@ -40,7 +40,7 @@ def register():
                     print("Такой пользователь уже есть")
                     return redirect(url_for('authorize.register'))
                 tm = math.floor(time.time())
-                arr=[]
+                arr = []
                 cur.execute("INSERT INTO users VALUES(NULL,?,?,?)", (form.name.data, hash, tm))
                 cur.execute("INSERT INTO profiles VALUES(NULL,?,NULL,NULL,NULL,?,"
                             "NULL,NULL,NULL,?)", (form.name.data, form.email.data, json.dumps(arr)))
@@ -70,7 +70,8 @@ def login():
                 cur.execute(f'SELECT * FROM users WHERE name = "{form.name.data}" LIMIT 1')
                 user_db = cur.fetchall()
                 if not user_db:
-                    print("Пользователь не найден")
+                    print("Пользователь не найден. (authorize/login.py def login)")
+                    flash("Пользователь не найден", "error")
                     return redirect(url_for('.login'))
             except sqlite3.Error as e:
                 print(f'Ошибка авторизации - authorize.login. {e}')

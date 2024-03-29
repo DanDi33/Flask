@@ -6,11 +6,10 @@ from flask import Blueprint, render_template, redirect, url_for, flash, session,
 import sqlite3
 
 from werkzeug.utils import secure_filename
-
 from SiteVisit.adminPanel.useful.forms import ProfileForm
 
 admin = Blueprint('adminPanel', __name__, template_folder='templates', static_folder='static')
-menu = [{"url": ".index", "title": "Панель"}, {"url": "authorize.logout", "title": "Выйти"}]
+menu = [{"url": ".index", "title": "Удалить профиль"}, {"url": "authorize.logout", "title": "Выйти"}]
 
 db = None
 
@@ -51,35 +50,39 @@ def index():
             if form[f'logo{i + 1}'].data != 'None' and form[f'url{i + 1}'].data != 'None':
                 social_in.append({'log_num': form[f'logo{i + 1}'].name, 'name': form[f'logo{i + 1}'].data,
                                   'name_url': form[f'url{i + 1}'].name, 'url': form[f'url{i + 1}'].data})
-        print(form.avatar.type)
-        print(form.avatar)
-        print(form.avatar.name)
-        print(form.avatar.data)
-        print(profile['id'])
-        file = form.avatar.data
-        upload_avatar(file, profile['id'])
-        image = form.avatar.data
-        filename = secure_filename(image)
-        os.makedirs(flask.current_app.config['UPLOAD_FOLDER'], exist_ok=True)
-        im = Image.open(image)
-        im_new = crop_max_square(im)
-        im_new.save(os.path.join(flask.current_app.config['UPLOAD_FOLDER'], filename), quality=95)
 
-        # ima = Image.open(image)
-        # im_new = crop_max_square(ima)
-        # im_new.save(os.path.join(flask.current_app.config['UPLOAD_FOLDER'], '111.jpg'), quality=95)
+        if form.avatar.data:
+            image = form.avatar.data
 
+            # Создаю имя файла вида: "логин" + ".расширение исходного файла"
+            last_part = image.filename.split('.')[-1]
+            filename = secure_filename(f"{profile['user_name']}.{last_part}")
+
+            # Создаю директорию "uploads", если ее нет
+            os.makedirs(flask.current_app.config['UPLOAD_FOLDER'], exist_ok=True)
+
+            # Сохраняю файл с новым именем в директории "uploads"
+            image.save(os.path.join(flask.current_app.config['UPLOAD_FOLDER'], filename))
+
+            # Обрезаю аватарку по наименьшей стороне до квадрата
+            im = Image.open(os.path.join(flask.current_app.config['UPLOAD_FOLDER'], filename))
+            im_new = crop_max_square(im)
+            im_new.save(os.path.join(flask.current_app.config['UPLOAD_FOLDER'], filename))
+        else:
+            filename = ''
         if db:
             try:
                 cur = db.cursor()
                 cur.execute(f"UPDATE profiles SET 'name' = ?, "
                             f"'surname' = ?, "
+                            f"'avatar' = ?, " 
                             f"'phone' = ?, "
                             f"'profession' = ?, "
                             f"'about' = ?, "
                             f"'social' = ? "
                             f"WHERE id LIKE ?;", (form.name.data,
                                                   form.surname.data,
+                                                  filename,
                                                   form.phone.data,
                                                   form.profession.data,
                                                   form.about.data,
@@ -115,52 +118,62 @@ def select_user(user_name):
     return None
 
 
-def upload_avatar(file, person_id):
-    if file:
-        try:
-            with open(file, "rb") as f:
-                img = f.read()
-            res = update_user_avatar(img, person_id)
-            if not res:
-                flash("Ошибка обновления аватара", "error")
-                return redirect(url_for("adminPanel.index"))
-            flash("Аватар обновлен", "success")
-        except FileNotFoundError as e:
-            print(f"Ошибка чтения файла ({file}). {e} (adminPanel/admin.py def upload_avatar).")
-            flash("Ошибка чтения файла", "error")
-    else:
-        print(f"{file} - файл не найден. (adminPanel/admin.py def upload_avatar).")
-        flash("Ошибка чтения файла", "error")
-    return redirect(url_for("adminPanel.index"))
-
-
-def update_user_avatar(img, user_id):
-    if not img:
-        return False
-    if not db:
-        print(f"Ошибка подключения к БД.db - False (adminPanel/admin.py def update_user_avatar).")
-        return False
-    try:
-        binary = sqlite3.Binary(img)
-        cur = db.cursor()
-        cur.execute(f"UPDATE profiles SET avatar = ? WHERE id = ?", (binary, user_id))
-        db.commit()
-    except sqlite3.Error as e:
-        print(f"Ошибка обновления аватара. (adminPanel/admin.py def update_user_avatar). {e}")
-        return False
-    return True
+# def upload_avatar(file, person_id):
+#     if file:
+#         try:
+#             with open(file.filename, "rb") as f:
+#                 img = f.read()
+#             res = update_user_avatar(img, person_id)
+#             if not res:
+#                 flash("Ошибка обновления аватара", "error")
+#                 return redirect(url_for("adminPanel.index"))
+#             flash("Аватар обновлен", "success")
+#         except FileNotFoundError as e:
+#             print(f"Ошибка чтения файла ({file}). {e} (adminPanel/admin.py def upload_avatar).")
+#             flash("Ошибка чтения файла", "error")
+#     else:
+#         print(f"{file} - файл не найден. (adminPanel/admin.py def upload_avatar).")
+#         flash("Ошибка чтения файла", "error")
+#     return redirect(url_for("adminPanel.index"))
+#
+#
+# def update_user_avatar(img, user_id):
+#     if not img:
+#         return False
+#     if not db:
+#         print(f"Ошибка подключения к БД.db - False (adminPanel/admin.py def update_user_avatar).")
+#         return False
+#     try:
+#         binary = sqlite3.Binary(img)
+#         cur = db.cursor()
+#         cur.execute(f"UPDATE profiles SET avatar = ? WHERE id = ?", (binary, user_id))
+#         db.commit()
+#     except sqlite3.Error as e:
+#         print(f"Ошибка обновления аватара. (adminPanel/admin.py def update_user_avatar). {e}")
+#         return False
+#     return True
 
 
 @admin.route("/userava")
 def userava():
     print("user_ava")
     profile = select_user(session['name'])
-    img = profile['avatar']
-    if not img:
-        return ""
-    answer = make_response(img)
-    answer.headers["Content-Type"] = "image/png"
-    return answer
+    img = None
+    if not profile["avatar"]:
+        try:
+            with flask.current_app.open_resource(flask.current_app.root_path +
+                                                 url_for('static', filename='img/profile-image.jpg'),
+                                                 "rb") as file:
+                img = file.read()
+        except FileNotFoundError as e:
+            print(f"Дефолтный аватар не найден. (main.py def get_avatar) {e}")
+    else:
+        try:
+            with flask.current_app.open_resource(flask.current_app.root_path + "/uploads/" + profile["avatar"], "rb") as file:
+                img = file.read()
+        except FileNotFoundError as e:
+            print(f"Файл аватара не найден. (main.py def get_avatar) {e}")
+    return img
 
 
 def crop_center(pil_img, crop_width: int, crop_height: int) -> Image:
@@ -175,6 +188,9 @@ def crop_center(pil_img, crop_width: int, crop_height: int) -> Image:
 
 
 def crop_max_square(pil_img):
+    """
+    Функция принимает картинку и возвращает квадратную картинку.
+    """
     return crop_center(pil_img, min(pil_img.size), min(pil_img.size))
 
 

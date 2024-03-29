@@ -12,12 +12,14 @@
             {%for field in form if field.name not in ["csrf_token","submit"]%}
             <p>{{field.label(class_="form-label")}}
                 {%if field.errors%}
-                    {{field(class_="invalid")}}
-                    <span class="invalid-feedback">
+                    {{field(class_="form-control")}}
+                    <ul class="invalid-feedback">
                         {% for e in field.errors%}
-                            {{e}}
+                        <li class="form-control invalid">
+                            <p>{{e}}
+                        </li>
                         {%endfor%}
-                    </span>
+                    </ul>
                 {% else%}
                     {{field(class_="form-control")}}
                 {%endif%}

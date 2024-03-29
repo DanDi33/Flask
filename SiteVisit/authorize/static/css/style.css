@@ -29,3 +29,14 @@ body {
     border: 1px solid #FF4343;
     background: #FF9C9C;
 }
+
+.invalid-feedback{
+    display: block !important;
+
+}
+
+.invalid{
+    border: 1px solid #FF4343;
+    background: #FF9C9C !important;
+    color:white !important;
+}

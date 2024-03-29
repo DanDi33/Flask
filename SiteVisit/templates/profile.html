@@ -14,12 +14,12 @@
         <p>PRO</p>
       </div>
       <div class="text">
-        <p class="name">{{res.name}} {{res.surname}}</p>
-        <p class="job_title">{{res.profession}}</p>
-        <p class="job_discription">{{res.about}}</p>
+        <p class="name">{{session.firstname}} {{session.lastname}}</p>
+        <p class="job_title">{{session.profession}}</p>
+        <p class="job_discription">{{session.about}}</p>
       </div>
       <div class="icons">
-        {% for social in res.social%}
+        {% for social in session.social%}
         <button>
           <ion-icon name="logo-{{social.name}}" onclick="location.href='{{social.url}}'"></ion-icon>
         </button>
@@ -27,10 +27,10 @@
       </div>
       <div class="button">
         <div>
-          <button class="message" type="button" onclick="location.href='mailto:{{res.email}}'">Message</button>
+          <button class="message" type="button" onclick="location.href='mailto:{{session.email}}'">Message</button>
         </div>
         <div>
-          <button class="connect" type="button" onclick="location.href='tel:+{{res.phone}}'">Connect</button>
+          <button class="connect" type="button" onclick="location.href='tel:+{{session.phone}}'">Connect</button>
         </div>
       </div>
     </div>

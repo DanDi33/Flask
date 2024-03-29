@@ -8,7 +8,7 @@ time integer NOT NULL
 create table if not exists profiles(
 id integer primary key autoincrement,
 user_name text unique not null,
-avatar BLOB default NULL,
+avatar text default NULL,
 name text default null,
 surname text default null,
 email text unique default null,
