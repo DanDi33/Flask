@@ -15,5 +15,6 @@ email text unique default null,
 phone integer default null,
 profession text default null,
 about text default null,
-social default null
+social default null,
+type_profile integer default 0
 );

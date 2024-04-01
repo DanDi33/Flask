@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileAllowed
 from wtforms import StringField, PasswordField, BooleanField, SubmitField
-from wtforms.fields.choices import SelectField
+from wtforms.fields.choices import SelectField, RadioField
 from wtforms.fields.simple import TelField, TextAreaField, URLField, FileField
 from wtforms.validators import Email, DataRequired, Length, EqualTo, URL
 
@@ -35,23 +35,24 @@ class ProfileForm(FlaskForm):
     about = TextAreaField("О себе", validators=[Length(min=0, max=200, message="Поле 'О себе' должно содержать "
                                                                                "до 200 символов")],
                           description="Здесь Вы можете написать о себе, своих скиллам, хобби, достижениях")
-    logo1 = SelectField("Logo", choices=logos, default=None)
-    logo2 = SelectField("Logo", choices=logos, default=None)
-    logo3 = SelectField("Logo", choices=logos, default=None)
-    logo4 = SelectField("Logo", choices=logos, default=None)
-    logo5 = SelectField("Logo", choices=logos, default=None)
-    logo6 = SelectField("Logo", choices=logos, default=None)
-    url1 = URLField("URL",
+    type_profile = RadioField("Вид Вашей визитки", choices=[(0, "1"), (1, "2"), (2, "3")], default=0)
+    logo1 = SelectField("Logo 1", choices=logos, default=None)
+    logo2 = SelectField("Logo 2", choices=logos, default=None)
+    logo3 = SelectField("Logo 3", choices=logos, default=None)
+    logo4 = SelectField("Logo 4", choices=logos, default=None)
+    logo5 = SelectField("Logo 5", choices=logos, default=None)
+    logo6 = SelectField("Logo 6", choices=logos, default=None)
+    url1 = URLField("URL 1",
                     description="Введите ссылку на Вашу страницу")
-    url2 = URLField("URL",
+    url2 = URLField("URL 2",
                     description="Введите ссылку на Вашу страницу")
-    url3 = URLField("URL",
+    url3 = URLField("URL 3",
                     description="Введите ссылку на Вашу страницу")
-    url4 = URLField("URL",
+    url4 = URLField("URL 4",
                     description="Введите ссылку на Вашу страницу")
-    url5 = URLField("URL",
+    url5 = URLField("URL 5",
                     description="Введите ссылку на Вашу страницу")
-    url6 = URLField("URL",
+    url6 = URLField("URL 6",
                     description="Введите ссылку на Вашу страницу")
     submit = SubmitField("Сохранить")
 

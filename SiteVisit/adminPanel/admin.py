@@ -69,17 +69,20 @@ def index():
             im_new = crop_max_square(im)
             im_new.save(os.path.join(flask.current_app.config['UPLOAD_FOLDER'], filename))
         else:
-            filename = ''
+            filename = profile['avatar']
+            if not filename:
+                filename = ''
         if db:
             try:
                 cur = db.cursor()
                 cur.execute(f"UPDATE profiles SET 'name' = ?, "
                             f"'surname' = ?, "
-                            f"'avatar' = ?, " 
+                            f"'avatar' = ?, "
                             f"'phone' = ?, "
                             f"'profession' = ?, "
                             f"'about' = ?, "
-                            f"'social' = ? "
+                            f"'social' = ?, "
+                            f"'type_profile' = ? "
                             f"WHERE id LIKE ?;", (form.name.data,
                                                   form.surname.data,
                                                   filename,
@@ -87,6 +90,7 @@ def index():
                                                   form.profession.data,
                                                   form.about.data,
                                                   json.dumps(social_in),
+                                                  int(form.type_profile.data),
                                                   session['id']))
                 db.commit()
                 return redirect(url_for('adminPanel.index'))
@@ -118,46 +122,11 @@ def select_user(user_name):
     return None
 
 
-# def upload_avatar(file, person_id):
-#     if file:
-#         try:
-#             with open(file.filename, "rb") as f:
-#                 img = f.read()
-#             res = update_user_avatar(img, person_id)
-#             if not res:
-#                 flash("Ошибка обновления аватара", "error")
-#                 return redirect(url_for("adminPanel.index"))
-#             flash("Аватар обновлен", "success")
-#         except FileNotFoundError as e:
-#             print(f"Ошибка чтения файла ({file}). {e} (adminPanel/admin.py def upload_avatar).")
-#             flash("Ошибка чтения файла", "error")
-#     else:
-#         print(f"{file} - файл не найден. (adminPanel/admin.py def upload_avatar).")
-#         flash("Ошибка чтения файла", "error")
-#     return redirect(url_for("adminPanel.index"))
-#
-#
-# def update_user_avatar(img, user_id):
-#     if not img:
-#         return False
-#     if not db:
-#         print(f"Ошибка подключения к БД.db - False (adminPanel/admin.py def update_user_avatar).")
-#         return False
-#     try:
-#         binary = sqlite3.Binary(img)
-#         cur = db.cursor()
-#         cur.execute(f"UPDATE profiles SET avatar = ? WHERE id = ?", (binary, user_id))
-#         db.commit()
-#     except sqlite3.Error as e:
-#         print(f"Ошибка обновления аватара. (adminPanel/admin.py def update_user_avatar). {e}")
-#         return False
-#     return True
-
-
 @admin.route("/userava")
 def userava():
-    print("user_ava")
+    print(f"user_ava ")
     profile = select_user(session['name'])
+    print(f"profile: avatar - {profile['avatar']},  name - {profile['name']}")
     img = None
     if not profile["avatar"]:
         try:
@@ -169,7 +138,8 @@ def userava():
             print(f"Дефолтный аватар не найден. (main.py def get_avatar) {e}")
     else:
         try:
-            with flask.current_app.open_resource(flask.current_app.root_path + "/uploads/" + profile["avatar"], "rb") as file:
+            with flask.current_app.open_resource(flask.current_app.root_path + "/uploads/" + profile["avatar"],
+                                                 "rb") as file:
                 img = file.read()
         except FileNotFoundError as e:
             print(f"Файл аватара не найден. (main.py def get_avatar) {e}")

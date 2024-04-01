@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Title</title>
   <link type="text/css" href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+  <link type="text/css" href="{{ url_for('static', filename=css_file) }}" rel="stylesheet">
     {% block title %}
   {% if title %}
   <title>{{title}}</title>
@@ -13,6 +14,10 @@
   {% endblock %}
 </head>
 <body>
+
+<div class="icons authorize">
+  <ion-icon name="person-circle-outline" onclick="location.href='{{url_for('authorize.login')}}'"></ion-icon>
+</div>
 {% block content%}
 {%endblock%}
 <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>

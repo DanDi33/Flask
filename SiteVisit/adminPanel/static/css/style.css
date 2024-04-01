@@ -79,3 +79,16 @@ body {
 .form-contact .invalid-feedback {
   color: #CC0000;
 }
+
+.image-toggle{
+max-width:80%;
+}
+
+.list-group{
+list-style-type: none;
+}
+
+.list-group li{
+margin-left:10px;
+margin-right:10px;
+}

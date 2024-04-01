@@ -1,13 +1,14 @@
 {% extends 'adminPanel/base.html' %}
 {% block content %}
 {{ super() }}
+
 {% for cat,msg in get_flashed_messages(True) %}
 <div class="flash {{cat}}">{{msg}}</div>
 {% endfor %}
-<!--<h3 style="text-align:center; margin:10px 0;">Ваш профиль</h3>-->
+
 <div class="container rounded bg-white mt-5 mb-5">
     <form action="./" method="post" enctype="multipart/form-data">
-         {{form.hidden_tag()}}
+        {{form.hidden_tag()}}
         <div class="row">
             <div class="py-3 mt-3">
                 <h4 class="text-center">Ваш профиль</h4>
@@ -16,32 +17,26 @@
         <div class="row">
             <div class="col-md-3 border-right">
                 <div class="d-flex flex-column align-items-center text-center p-3 py-2">
-
-<!--                    {{form.avatar.label(class_="labels")}}-->
-                            {%if form.avatar.errors%}
-                            {{form.avatar(class_="form-control invalid")}}
-                            <p class="invalid-feedback">
-                                {% for e in form.avatar.errors%}
-                                {{e}}
-                                {%endfor%}
-                            </p>
-                            {% else%}
-                                {%if profile.avatar == None%}
-                                    <img class="rounded-circle mt-5" width="150px" style="cursor: pointer;"
-                                        src="{{url_for('static', filename='/img/profile-image.jpg')}}"  onclick='avatar.click()'>
-                                {% else%}
-                                    <img class="rounded-circle mt-5" width="150px" style="cursor: pointer;"
-                                        src="{{url_for('.userava')}}"  onclick='avatar.click()'>
-                                {%endif%}
-                                {{form.avatar(class_="form-control", style_="display:none")}}
-                            {%endif%}
-
-
-<!--                    <img class="rounded-circle mt-5" width="150px"-->
-<!--                        src="{{url_for('static', filename='/img/profile-image.jpg')}}">-->
+                    {%if form.avatar.errors%}
+                    {{form.avatar(class_="form-control invalid")}}
+                    <p class="invalid-feedback">
+                        {% for e in form.avatar.errors%}
+                        {{e}}
+                        {%endfor%}
+                    </p>
+                    {% else%}
+                    {%if profile.avatar == None%}
+<!--                При нажатии на onclick происходит событие click для id=avatar (смотри forms.py)-->
+                    <img class="rounded-circle mt-5" width="150px" style="cursor: pointer;"
+                        src="{{url_for('static', filename='/img/profile-image.jpg')}}" onclick='avatar.click()'>
+                    {% else%}
+                    <img class="rounded-circle mt-5" width="150px" style="cursor: pointer;"
+                        src="{{url_for('.userava')}}" onclick='avatar.click()'>
+                    {%endif%}
+                    {{form.avatar(class_="form-control", style_="display:none")}}
+                    {%endif%}
                     <span class="font-weight-bold">{{profile.user_name}}</span>
                     <span class="text-black-50">{{profile.email}}</span>
-
                     <span> </span>
                 </div>
             </div>
@@ -60,11 +55,11 @@
                                 {%endfor%}
                             </span>
                             {% else%}
-                                {%if profile.name == None%}
-                                    {{form.name(class_="form-control", placeholder=form.name.description)}}
-                                {%else%}
-                                    {{form.name(class_="form-control", placeholder=form.name.description, value=profile.name)}}
-                                {%endif%}
+                            {%if profile.name == None%}
+                            {{form.name(class_="form-control", placeholder=form.name.description)}}
+                            {%else%}
+                            {{form.name(class_="form-control", placeholder=form.name.description, value=profile.name)}}
+                            {%endif%}
                             {%endif%}
                         </div>
 
@@ -79,15 +74,14 @@
                                 {%endfor%}
                             </span>
                             {% else%}
-                                {%if profile.surname == None%}
-                                    {{form.surname(class_="form-control", placeholder=form.surname.description)}}
-                                {%else%}
-                                    {{form.surname(class_="form-control", placeholder=form.surname.description,
-                                    value=profile.surname)}}
-                                {%endif%}
+                            {%if profile.surname == None%}
+                            {{form.surname(class_="form-control", placeholder=form.surname.description)}}
+                            {%else%}
+                            {{form.surname(class_="form-control", placeholder=form.surname.description,
+                            value=profile.surname)}}
+                            {%endif%}
                             {%endif%}
                         </div>
-
                     </div>
                     <div class="row mt-3">
 
@@ -102,12 +96,12 @@
                                 {%endfor%}
                             </p>
                             {% else%}
-                                {%if profile.phone == None%}
-                                    {{form.phone(class_="form-control", placeholder=form.phone.description)}}
-                                {% else%}
-                                    {{form.phone(class_="form-control", placeholder=form.phone.description,
-                                    value=profile.phone)}}
-                                {%endif%}
+                            {%if profile.phone == None%}
+                            {{form.phone(class_="form-control", placeholder=form.phone.description)}}
+                            {% else%}
+                            {{form.phone(class_="form-control", placeholder=form.phone.description,
+                            value=profile.phone)}}
+                            {%endif%}
                             {%endif%}
                         </div>
 
@@ -122,33 +116,33 @@
                                 {%endfor%}
                             </span>
                             {% else%}
-                                {%if profile.profession == None%}
-                                    {{form.profession(class_="form-control", placeholder=form.profession.description)}}
-                                {% else%}
-                                    {{form.profession(class_="form-control", placeholder=form.profession.description,
-                                    value=profile.profession)}}
-                                {%endif%}
+                            {%if profile.profession == None%}
+                            {{form.profession(class_="form-control", placeholder=form.profession.description)}}
+                            {% else%}
+                            {{form.profession(class_="form-control", placeholder=form.profession.description,
+                            value=profile.profession)}}
+                            {%endif%}
                             {%endif%}
                         </div>
-
                     </div>
                 </div>
             </div>
+
+            <!--Форма ввода: О себе-->
+
             <div class="col-md-4">
                 <div class="p-3 py-2">
-
-                    <!--Форма ввода: О себе-->
                     <div class="col-md-12 mt-2">
                         {{form.about.label(class_="labels")}}
                         {%if form.about.errors%}
-                        {{form.about(class_="invalid")}}
-                        <span class="invalid-feedback">
-                            {% for e in form.about.errors%}
-                            {{e}}
-                            {%endfor%}
-                        </span>
+                            {{form.about(class_="invalid")}}
+                            <span class="invalid-feedback">
+                                {% for e in form.about.errors%}
+                                    {{e}}
+                                {%endfor%}
+                            </span>
                         {% else%}
-                        {{form.about(class_="form-control", placeholder=form.about.description,rows=7)}}
+                            {{form.about(class_="form-control", placeholder=form.about.description,rows=7)}}
                             {%if profile.about != None%}
                                 <script>
                                     document.querySelector('textarea').innerHTML = '{{profile.about}}'
@@ -159,68 +153,128 @@
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-3 border-right">
-                <div class="p-3 py-2">
 
-                    <!-- Форма выбора Лого-->
-                    {%for field in form if field.name in ["logo1","logo2","logo3","logo4","logo5","logo6"]%}
-                        <div class="col-md-12">
-                            {{field.label(class_="labels")}}
-                            {%if field.errors%}
-                                {{field(class_="invalid")}}
-                                <span class="invalid-feedback">
-                                    {% for e in field.errors%}
-                                    {{e}}
+        <!-- Форма выбора Лого и Url-->
+
+        <div class="row">
+            <div class="col-md-8 border-right">
+                <div class="p-3 py-2">
+                    {%for field_logo in form if field_logo.name in ["logo1","logo2","logo3","logo4","logo5","logo6"]%}
+                        <div class="row">
+                            <div class="col-md-4 border-right">
+                                <div class="col-md-12">
+                                    {{field_logo.label(class_="labels")}}
+                                    {%if field_logo.errors%}
+                                    {{field_logo(class_="invalid")}}
+                                    <span class="invalid-feedback">
+                                        {% for e in field_logo.errors%}
+                                        {{e}}
+                                        {%endfor%}
+                                    </span>
+                                    {% else%}
+                                    {{field_logo(class_="form-control")}}
+                                    {%for elem in social if elem.log_num==field_logo.name%}
+                                    <script>
+                                        document.querySelector('[name={{field_logo.name}}]').value = '{{elem.name}}';
+                                    </script>
                                     {%endfor%}
-                                </span>
-                                {% else%}
-                                    {{field(class_="form-control")}}
-                                    {%for elem in social if elem.log_num==field.name%}
-                                        <script>
-                                            document.querySelector('[name={{field.name}}]').value='{{elem.name}}';
-                                        </script>
-                                    {%endfor%}
-                                {%endif%}
+                                    {%endif%}
+                                </div>
+                            </div>
+                                {%for field_url in form if field_url.name in ["url1","url2","url3","url4","url5","url6"]%}
+                                    {%if field_logo.name[-1]==field_url.name[-1]%}
+                                    <div class="col-md-8 border-right">
+                                        <div class="col-md-12">
+                                            {{field_url.label(class_="labels")}}
+                                            <!--                        {%if field_url.errors%}-->
+                                            <!--                            {{field_url(class_="invalid")}}-->
+                                            <!--                            <span class="invalid-feedback">-->
+                                            <!--                                {% for e in field_url.errors%}-->
+                                            <!--                                {{e}}-->
+                                            <!--                                {%endfor%}-->
+                                            <!--                            </span>-->
+                                            <!--                        {% else%}-->
+                                            <!--                            {{field_url(class_="form-control", placeholder=field_url.description)}}-->
+                                            <!--                        {%endif%}-->
+                                            {{field_url(class_="form-control", placeholder=field_url.description)}}
+                                            {%for elem in social if elem.name_url==field_url.name%}
+                                            <script>
+                                                document.querySelector('[name={{field_url.name}}]').value = '{{elem.url}}';
+                                            </script>
+                                            {%endfor%}
+                                        </div>
+                                    </div>
+                                    {%endif%}
+                                {%endfor%}
                         </div>
                     {%endfor%}
-
                 </div>
             </div>
-            <div class="col-md-5 border-right">
+
+<!--            Выбор вида визитки-->
+            <div class="col-md-4">
                 <div class="p-3 py-2">
-                    {%for field in form if field.name in ["url1","url2","url3","url4","url5","url6"]%}
-                    <div class="col-md-12">
-                        {{field.label(class_="labels")}}
-<!--                        {%if field.errors%}-->
-<!--                            {{field(class_="invalid")}}-->
-<!--                            <span class="invalid-feedback">-->
-<!--                                {% for e in field.errors%}-->
-<!--                                {{e}}-->
-<!--                                {%endfor%}-->
-<!--                            </span>-->
-<!--                        {% else%}-->
-<!--                            {{field(class_="form-control", placeholder=field.description)}}-->
-<!--                        {%endif%}-->
-                        {{field(class_="form-control", placeholder=field.description)}}
-                        {%for elem in social if elem.name_url==field.name%}
+                    <div class="col-md-12 mt-2 ">
+                        <p>{{form.type_profile.label(class_="form-label")}}
+                            {%if form.errors%}
+                                {{form.type_profile(class_="form-check form-check-inline")}}
+                                <ul class="invalid-feedback">
+                                    {% for e in form.errors%}
+                                    <li class="form-control invalid">
+                                        <p>{{e}}
+                                    </li>
+                                    {%endfor%}
+                                </ul>
+                            {% else%}
+                                {{form.type_profile(class_="list-group list-group-horizontal")}}
+                            {%endif%}
                             <script>
-                                document.querySelector('[name={{field.name}}]').value='{{elem.url}}';
+                                let temp = {{profile.type_profile}};
+                                if (temp == "0") {
+                                      document.querySelector('#type_profile-0').checked = true;
+                                };
+                                document.querySelector('#type_profile-0').onclick = function() {
+                                document.querySelector('#image1').setAttribute('style', 'display:block');
+                                document.querySelector('#image2').setAttribute('style', 'display:none');
+                                document.querySelector('#image3').setAttribute('style', 'display:none');
+                                };
+                                if (temp == "1") {
+                                      document.querySelector('#type_profile-1').checked = true;
+                                };
+                                document.querySelector('#type_profile-1').onclick = function() {
+                                document.querySelector('#image1').setAttribute('style', 'display:none');
+                                document.querySelector('#image2').setAttribute('style', 'display:block');
+                                document.querySelector('#image3').setAttribute('style', 'display:none');
+                                };
+                                if (temp == "2") {
+                                      document.querySelector('#type_profile-2').checked = true;
+                                };
+                                document.querySelector('#type_profile-2').onclick = function() {
+                                document.querySelector('#image1').setAttribute('style', 'display:none');
+                                document.querySelector('#image2').setAttribute('style', 'display:none');
+                                document.querySelector('#image3').setAttribute('style', 'display:block');
+                                };
                             </script>
-                        {%endfor%}
                     </div>
-                    {%endfor%}
+                    <div class="col-md-12 mt-2">
+                        <img src="{{url_for('adminPanel.static', filename='/img/prev1.png')}}" title="image 1" alt="image 1" id="image1" class="image-toggle" />
+                        <img src="{{url_for('adminPanel.static', filename='/img/prev2.png')}}" title="image 2" alt="image 2" id="image2" class="image-toggle"  style="display:none"/>
+                        <img src="{{url_for('adminPanel.static', filename='/img/prev3.png')}}" title="image 3" alt="image 3" id="image3" class="image-toggle"  style="display:none"/>
+                    </div>
                 </div>
             </div>
         </div>
+
+<!--        Footer of form(Buttons)-->
         <div class="row">
             <div class="col-md-3 border-right"></div>
             <div class="col-md-5 border-right">
                 <div class="p-3 py-2">
 
                     <div class="mt-5 text-center">
+<!--                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-bs-toggle="modal"-->
+<!--                            data-bs-target="#AuthorizationModal">Предварительный просмотр</button>-->
                         {{form.submit(class_="btn btn-primary profile-button")}}
-<!--                        <button class="btn btn-primary profile-button" type="submit">Save Profile</button>-->
                     </div>
                 </div>
             </div>
@@ -229,5 +283,44 @@
     </form>
 </div>
 
+<!-- Модальное окно Предварительный просмотр-->
+<div class="modal fade" id="AuthorizationModal" tabindex="-1" aria-labelledby="exampleModalLabelAuthorization"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabelAuthorization">Авторизация</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+            </div>
+            <div class="modal-body">
+                <form action="/login" method="post">
+                    <div class="mb-3">
+                        <label for="AuthorizationInputEmail" class="form-label">Адрес электронной почты</label>
+                        <input type="email" class="form-control" id="AuthorizationInputEmail"
+                            aria-describedby="AuthorizationEmailHelp" name="email" required>
+                        <div id="AuthorizationEmailHelp" class="form-text">Мы никогда никому не передадим вашу
+                            электронную почту.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="AuthorizationInputPassword" class="form-label">Пароль</label>
+                        <input type="password" class="form-control" id="AuthorizationInputPassword" name="psw" required>
+                    </div>
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="AuthorizationCheck" name="remainme">
+                        <label class="form-check-label" for="AuthorizationCheck">Запомни меня</label>
+                    </div>
+                    {% for cat,msg in get_flashed_messages(True) %}
+                    <div class="flash {{cat}}">{{msg}}</div>
+                    {% endfor %}
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-bs-toggle="modal"
+                            data-bs-target="#RegisterModal">Регистрация</button>
+                        <button type="submit" class="btn btn-primary">Войти</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
 {% endblock %}

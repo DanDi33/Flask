@@ -1,6 +1,5 @@
-import os
 import sqlite3
-from flask import Flask, render_template, g, abort, make_response, url_for, json, session
+from flask import Flask, render_template, g, abort, make_response, url_for, session
 from useful.FDataBase import FDataBase
 from authorize.login import user
 from adminPanel.admin import admin
@@ -14,6 +13,11 @@ app.register_blueprint(user, url_prefix="/user")
 app.register_blueprint(admin, url_prefix="/admin")
 
 dbase = None
+file_profile = [
+    {'html': 'profile.html', 'css': 'css/pro_style.css'},
+    {'html': 'profile1.html', 'css': 'css/pro_style1.css'},
+    {'html': 'profile2.html', 'css': 'css/pro_style2.css'},
+]
 
 
 @app.before_request
@@ -73,37 +77,39 @@ def get_avatar():
 @app.route("/")
 def index():
     (session['firstname'], session['lastname'], session['email'], session['phone'],
-     session['profession'], session['about'], session['social'],
-     session['avatar']) = ("Ethan", "Rivers", "evan@google.com", 79009007777, "UI / UX Designer",
-                           "Lorem ipsum dolor sit amet consectetur adipisicing elit. Magnam atque, ipsam a amet "
-                           "laboriosam eligendi.", [{"name": "dribbble", "url": "https://dribbble.com/"},
-                                                    {"name": "instagram", "url": "https"
-                                                                                 "://instagram.com/"},
-                                                    {"name": "twitter", "url": "https"
-                                                                               "://x.com/"},
-                                                    {"name": "linkedin",
-                                                     "url": "https://careers"
-                                                            ".linkedin.cn/"},
-                                                    {"name": "facebook",
-                                                     "url": "https://facebook.com/"},
-                                                    {"name": "behance",
-                                                     "url": "https://www.behance.net/"}],
-                           False)
-    return render_template("profile.html")
+     session['profession'], session['about'], session['social'], session['avatar'],
+     session['type_profile']) = ("Ethan", "Rivers", "evan@google.com", 79009007777, "UI / UX Designer",
+                                 "Lorem ipsum dolor sit amet consectetur adipisicing elit. Magnum atque, ipsam a amet "
+                                 "laboriosam eligendi.", [{"name": "dribbble", "url": "https://dribbble.com/"},
+                                                          {"name": "instagram", "url": "https"
+                                                                                       "://instagram.com/"},
+                                                          {"name": "twitter", "url": "https"
+                                                                                     "://x.com/"},
+                                                          {"name": "linkedin",
+                                                           "url": "https://careers"
+                                                                  ".linkedin.cn/"},
+                                                          {"name": "facebook",
+                                                           "url": "https://facebook.com/"},
+                                                          {"name": "behance",
+                                                           "url": "https://www.behance.net/"}],
+                                 False, 2)
+    return render_template(file_profile[session['type_profile']]['html'],
+                           css_file=file_profile[session['type_profile']]['css'], title="Main")
 
 
 @app.route("/<alias>", methods=["GET", "POST"])
 def showpost(alias):
     (session['user_name'], session['firstname'], session['lastname'], session['email'],
      session['phone'], session['profession'], session['about'], session['social'],
-     session['avatar']) = dbase.get_profile(alias)
+     session['avatar'], session['type_profile']) = dbase.get_profile(alias)
 
     print(f"showpost - {session}")
 
     if not session['user_name']:
         abort(404)
 
-    return render_template("profile.html", title=alias)
+    return render_template(file_profile[session['type_profile']]['html'],
+                           css_file=file_profile[session['type_profile']]['css'], title=alias)
 
 
 @app.errorhandler(404)
