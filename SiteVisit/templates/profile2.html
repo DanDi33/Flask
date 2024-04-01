@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {{ super() }}
+
+
+<!--<section>-->
+
+<!--  <div class="box1 box">-->
+<!--    <div class="content">-->
+<!--      <div class="image">-->
+<!--        <img src="{{url_for('userava')}}" alt="Profile Image">-->
+<!--      </div>-->
+<!--      <div class="level">-->
+<!--        <p>PRO</p>-->
+<!--      </div>-->
+<!--      <div class="text">-->
+<!--        <p class="name">{{session.firstname}} {{session.lastname}}</p>-->
+<!--        <p class="job_title">{{session.profession}}</p>-->
+<!--        <p class="job_discription">{{session.about}}</p>-->
+<!--      </div>-->
+<!--      <div class="icons">-->
+<!--        {% for social in session.social%}-->
+<!--        <button>-->
+<!--          <ion-icon name="logo-{{social.name}}" onclick="location.href='{{social.url}}'"></ion-icon>-->
+<!--        </button>-->
+<!--        {%endfor%}-->
+<!--      </div>-->
+<!--      <div class="button">-->
+<!--        <div>-->
+<!--          <button class="message" type="button" onclick="location.href='mailto:{{session.email}}'">Message</button>-->
+<!--        </div>-->
+<!--        <div>-->
+<!--          <button class="connect" type="button" onclick="location.href='tel:+{{session.phone}}'">Connect</button>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </div>-->
+
+<!--</section>-->
+
+<div class="wrapper">
+
+      <div class="profile-card">
+          <div class="profile-header">
+              <img src="{{ url_for('static', filename='img/fon.jpg') }}" alt="">
+          </div>
+          <div class="profile-body">
+                <div class="author-img">
+                    <img src="{{url_for('userava')}}" alt="Photo">
+                </div>
+                <div class="name">{{session.firstname}} {{session.lastname}}</div>
+                <div class="intro">
+                    <p class="job_title">{{session.profession}}
+                   </p>
+                   <p>{{session.about}}
+                   </p>
+                </div>
+              <div class="icons social-icon">
+        {% for social in session.social%}
+        <button>
+          <ion-icon name="logo-{{social.name}}" onclick="location.href='{{social.url}}'"></ion-icon>
+        </button>
+        {%endfor%}
+      </div>
+<!--                <div class="social-icon">-->
+<!--                    <ul>-->
+<!--                        <li>-->
+<!--                            <a href="#">-->
+<!--                                <i class="fab fa-facebook-f"></i>-->
+<!--                            </a>-->
+<!--                        </li>-->
+<!--                        -->
+<!--                        <li>-->
+<!--                            <a href="#">-->
+<!--                                <i class="fab fa-twitter"></i>-->
+<!--                            </a>-->
+<!--                        </li>-->
+<!--                        <li>-->
+<!--                            <a href="#">-->
+<!--                                <i class="fab fa-behance"></i>-->
+<!--                            </a>-->
+<!--                        </li>-->
+<!--                        <li>-->
+<!--                            <a href="#">-->
+<!--                                <i class="fab fa-instagram"></i>-->
+<!--                            </a>-->
+<!--                        </li>-->
+<!--                        <li>-->
+<!--                            <a href="#">-->
+<!--                                <i class="fab fa-google-plus-g"></i>-->
+<!--                            </a>-->
+<!--                        </li>-->
+<!--                    </ul>-->
+<!--                </div>-->
+          </div>
+      </div>
+
+
+  </div>
+
+{% endblock %}
