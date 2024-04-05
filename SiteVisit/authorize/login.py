@@ -43,7 +43,7 @@ def register():
                 arr = []
                 cur.execute("INSERT INTO users VALUES(NULL,?,?,?)", (form.name.data, hash, tm))
                 cur.execute("INSERT INTO profiles VALUES(NULL,?,NULL,NULL,NULL,?,"
-                            "NULL,NULL,NULL,?)", (form.name.data, form.email.data, json.dumps(arr)))
+                            "NULL,NULL,NULL,?,0)", (form.name.data, form.email.data, json.dumps(arr)))
                 db.commit()
                 if res:
                     flash("Вы успешно зарегистрированы", category="success")
@@ -60,10 +60,11 @@ def register():
 @user.route("/", methods=["POST", "GET"])
 @user.route("/login", methods=["POST", "GET"])
 def login():
+    if isLogged():
+        return redirect(url_for('adminPanel.index'))
     user_db = None
     form = LoginForm()
     if form.validate_on_submit():
-
         if db:
             try:
                 cur = db.cursor()
@@ -74,7 +75,7 @@ def login():
                     flash("Пользователь не найден", "error")
                     return redirect(url_for('.login'))
             except sqlite3.Error as e:
-                print(f'Ошибка авторизации - authorize.login. {e}')
+                print(f'Ошибка авторизации. (authorize/login.py def login) {e}')
         if user_db and user_db[0]['name'] == form.name.data and check_password_hash(user_db[0]['psw'], form.psw.data):
             session['id'] = user_db[0]['id']
             session['name'] = user_db[0]['name']
@@ -95,8 +96,7 @@ def isLogged():
 def logout():
     if not isLogged():
         return redirect(url_for('.login'))
-    session.pop('id', None)
     name = session.pop('name', None)
-    session.pop('psw', None)
+    session.clear()
     print(f"Пользователь {name} вышел из аккаунта (authorize/login.py def logout). ")
     return redirect(url_for('.login'))

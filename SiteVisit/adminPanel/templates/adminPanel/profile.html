@@ -48,12 +48,14 @@
                         <div class="col-md-6">
                             {{form.name.label(class_="labels")}}
                             {%if form.name.errors%}
-                            {{form.name(class_="invalid")}}
-                            <span class="invalid-feedback">
-                                {% for e in form.name.errors%}
-                                {{e}}
-                                {%endfor%}
-                            </span>
+                            {{form.name(class_="form-control invalid")}}
+                                <ul class="invalid-feedback">
+                                    {% for e in form.name.errors%}
+                                        <li class="form-control invalid">
+                                            {{e}}
+                                        </li>
+                                    {%endfor%}
+                                </ul>
                             {% else%}
                             {%if profile.name == None%}
                             {{form.name(class_="form-control", placeholder=form.name.description)}}
@@ -67,19 +69,21 @@
                         <div class="col-md-6">
                             {{form.surname.label(class_="labels")}}
                             {%if form.surname.errors%}
-                            {{form.surname(class_="form-control invalid")}}
-                            <span class="invalid-feedback">
-                                {% for e in form.surname.errors%}
-                                {{e}}
-                                {%endfor%}
-                            </span>
+                                {{form.surname(class_="form-control invalid")}}
+                                <ul class="invalid-feedback">
+                                    {% for e in form.surname.errors%}
+                                        <li class="form-control invalid">
+                                            <p>{{e}}
+                                        </li>
+                                    {%endfor%}
+                                </ul>
                             {% else%}
-                            {%if profile.surname == None%}
-                            {{form.surname(class_="form-control", placeholder=form.surname.description)}}
-                            {%else%}
-                            {{form.surname(class_="form-control", placeholder=form.surname.description,
-                            value=profile.surname)}}
-                            {%endif%}
+                                {%if profile.surname == None%}
+                                    {{form.surname(class_="form-control", placeholder=form.surname.description)}}
+                                {%else%}
+                                    {{form.surname(class_="form-control", placeholder=form.surname.description,
+                                    value=profile.surname)}}
+                                {%endif%}
                             {%endif%}
                         </div>
                     </div>
@@ -89,12 +93,14 @@
                         <div class="col-md-12">
                             {{form.phone.label(class_="labels")}}
                             {%if form.phone.errors%}
-                            {{form.phone(class_="form-control invalid")}}
-                            <p class="invalid-feedback">
-                                {% for e in form.phone.errors%}
-                                {{e}}
-                                {%endfor%}
-                            </p>
+                            {{form.phone(class_="form-control")}}
+                             <ul class="invalid-feedback">
+                                    {% for e in form.phone.errors%}
+                                        <li class="form-control invalid">
+                                            <p>{{e}}
+                                        </li>
+                                    {%endfor%}
+                                </ul>
                             {% else%}
                             {%if profile.phone == None%}
                             {{form.phone(class_="form-control", placeholder=form.phone.description)}}
@@ -110,11 +116,13 @@
                             {{form.profession.label(class_="labels")}}
                             {%if form.profession.errors%}
                             {{form.profession(class_="form-control invalid")}}
-                            <span class="invalid-feedback">
-                                {% for e in form.profession.errors%}
-                                {{e}}
-                                {%endfor%}
-                            </span>
+                                <ul class="invalid-feedback">
+                                    {% for e in form.profession.errors%}
+                                        <li class="form-control invalid">
+                                            <p>{{e}}
+                                        </li>
+                                    {%endfor%}
+                                </ul>
                             {% else%}
                             {%if profile.profession == None%}
                             {{form.profession(class_="form-control", placeholder=form.profession.description)}}
@@ -136,11 +144,13 @@
                         {{form.about.label(class_="labels")}}
                         {%if form.about.errors%}
                             {{form.about(class_="invalid")}}
-                            <span class="invalid-feedback">
-                                {% for e in form.about.errors%}
-                                    {{e}}
-                                {%endfor%}
-                            </span>
+                                <ul class="invalid-feedback">
+                                    {% for e in form.about.errors%}
+                                        <li class="form-control invalid">
+                                            <p>{{e}}
+                                        </li>
+                                    {%endfor%}
+                                </ul>
                         {% else%}
                             {{form.about(class_="form-control", placeholder=form.about.description,rows=7)}}
                             {%if profile.about != None%}
@@ -166,11 +176,13 @@
                                     {{field_logo.label(class_="labels")}}
                                     {%if field_logo.errors%}
                                     {{field_logo(class_="invalid")}}
-                                    <span class="invalid-feedback">
+                                    <ul class="invalid-feedback">
                                         {% for e in field_logo.errors%}
-                                        {{e}}
+                                            <li class="form-control invalid">
+                                                <p>{{e}}
+                                            </li>
                                         {%endfor%}
-                                    </span>
+                                    </ul>
                                     {% else%}
                                     {{field_logo(class_="form-control")}}
                                     {%for elem in social if elem.log_num==field_logo.name%}
@@ -186,21 +198,22 @@
                                     <div class="col-md-8 border-right">
                                         <div class="col-md-12">
                                             {{field_url.label(class_="labels")}}
-                                            <!--                        {%if field_url.errors%}-->
-                                            <!--                            {{field_url(class_="invalid")}}-->
-                                            <!--                            <span class="invalid-feedback">-->
-                                            <!--                                {% for e in field_url.errors%}-->
-                                            <!--                                {{e}}-->
-                                            <!--                                {%endfor%}-->
-                                            <!--                            </span>-->
-                                            <!--                        {% else%}-->
-                                            <!--                            {{field_url(class_="form-control", placeholder=field_url.description)}}-->
-                                            <!--                        {%endif%}-->
-                                            {{field_url(class_="form-control", placeholder=field_url.description)}}
+                                            {%if field_url.errors%}
+                                                {{field_url(class_="form-control")}}
+                                                <ul class="invalid-feedback">
+                                                    {% for e in form.surname.errors%}
+                                                        <li class="form-control invalid">
+                                                            <p>{{e}}
+                                                        </li>
+                                                    {%endfor%}
+                                                </ul>
+                                            {% else%}
+                                                {{field_url(class_="form-control", placeholder=field_url.description)}}
+                                            {%endif%}
                                             {%for elem in social if elem.name_url==field_url.name%}
-                                            <script>
-                                                document.querySelector('[name={{field_url.name}}]').value = '{{elem.url}}';
-                                            </script>
+                                                <script>
+                                                    document.querySelector('[name={{field_url.name}}]').value = '{{elem.url}}';
+                                                </script>
                                             {%endfor%}
                                         </div>
                                     </div>
@@ -216,10 +229,10 @@
                 <div class="p-3 py-2">
                     <div class="col-md-12 mt-2 ">
                         <p>{{form.type_profile.label(class_="form-label")}}
-                            {%if form.errors%}
-                                {{form.type_profile(class_="form-check form-check-inline")}}
+                            {%if form.type_profile.errors%}
+                                {{form.type_profile(class_="list-group list-group-horizontal")}}
                                 <ul class="invalid-feedback">
-                                    {% for e in form.errors%}
+                                    {% for e in form.type_profile.errors%}
                                     <li class="form-control invalid">
                                         <p>{{e}}
                                     </li>
@@ -228,32 +241,48 @@
                             {% else%}
                                 {{form.type_profile(class_="list-group list-group-horizontal")}}
                             {%endif%}
+
                             <script>
-                                let temp = {{profile.type_profile}};
-                                if (temp == "0") {
-                                      document.querySelector('#type_profile-0').checked = true;
-                                };
-                                document.querySelector('#type_profile-0').onclick = function() {
+                                function showPic1() {
                                 document.querySelector('#image1').setAttribute('style', 'display:block');
                                 document.querySelector('#image2').setAttribute('style', 'display:none');
                                 document.querySelector('#image3').setAttribute('style', 'display:none');
                                 };
-                                if (temp == "1") {
-                                      document.querySelector('#type_profile-1').checked = true;
-                                };
-                                document.querySelector('#type_profile-1').onclick = function() {
+
+                                function showPic2() {
                                 document.querySelector('#image1').setAttribute('style', 'display:none');
                                 document.querySelector('#image2').setAttribute('style', 'display:block');
                                 document.querySelector('#image3').setAttribute('style', 'display:none');
                                 };
-                                if (temp == "2") {
-                                      document.querySelector('#type_profile-2').checked = true;
-                                };
-                                document.querySelector('#type_profile-2').onclick = function() {
+
+                                function showPic3() {
                                 document.querySelector('#image1').setAttribute('style', 'display:none');
                                 document.querySelector('#image2').setAttribute('style', 'display:none');
                                 document.querySelector('#image3').setAttribute('style', 'display:block');
                                 };
+
+                                document.addEventListener("DOMContentLoaded", () => {
+
+                                    let temp = {{profile.type_profile}};
+                                    if (temp == "0") {
+                                          document.querySelector('#type_profile-0').checked = true;
+                                          showPic1();
+                                    };
+
+                                    if (temp == "1") {
+                                          document.querySelector('#type_profile-1').checked = true;
+                                          showPic2();
+                                    };
+
+                                    if (temp == "2") {
+                                          document.querySelector('#type_profile-2').checked = true;
+                                           showPic3()
+                                    };
+
+                                    document.querySelector('#type_profile-0').onclick = showPic1;
+                                    document.querySelector('#type_profile-1').onclick = showPic2;
+                                    document.querySelector('#type_profile-2').onclick = showPic3;
+                                })
                             </script>
                     </div>
                     <div class="col-md-12 mt-2">
@@ -270,57 +299,15 @@
             <div class="col-md-3 border-right"></div>
             <div class="col-md-5 border-right">
                 <div class="p-3 py-2">
-
                     <div class="mt-5 text-center">
-<!--                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-bs-toggle="modal"-->
-<!--                            data-bs-target="#AuthorizationModal">Предварительный просмотр</button>-->
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-bs-toggle="modal"
+                            data-bs-target="#AuthorizationModal">Удалить профиль</button>
                         {{form.submit(class_="btn btn-primary profile-button")}}
                     </div>
                 </div>
             </div>
         </div>
-
     </form>
-</div>
-
-<!-- Модальное окно Предварительный просмотр-->
-<div class="modal fade" id="AuthorizationModal" tabindex="-1" aria-labelledby="exampleModalLabelAuthorization"
-    aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabelAuthorization">Авторизация</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
-            </div>
-            <div class="modal-body">
-                <form action="/login" method="post">
-                    <div class="mb-3">
-                        <label for="AuthorizationInputEmail" class="form-label">Адрес электронной почты</label>
-                        <input type="email" class="form-control" id="AuthorizationInputEmail"
-                            aria-describedby="AuthorizationEmailHelp" name="email" required>
-                        <div id="AuthorizationEmailHelp" class="form-text">Мы никогда никому не передадим вашу
-                            электронную почту.</div>
-                    </div>
-                    <div class="mb-3">
-                        <label for="AuthorizationInputPassword" class="form-label">Пароль</label>
-                        <input type="password" class="form-control" id="AuthorizationInputPassword" name="psw" required>
-                    </div>
-                    <div class="mb-3 form-check">
-                        <input type="checkbox" class="form-check-input" id="AuthorizationCheck" name="remainme">
-                        <label class="form-check-label" for="AuthorizationCheck">Запомни меня</label>
-                    </div>
-                    {% for cat,msg in get_flashed_messages(True) %}
-                    <div class="flash {{cat}}">{{msg}}</div>
-                    {% endfor %}
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-bs-toggle="modal"
-                            data-bs-target="#RegisterModal">Регистрация</button>
-                        <button type="submit" class="btn btn-primary">Войти</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
 </div>
 
 {% endblock %}

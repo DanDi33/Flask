@@ -12,7 +12,7 @@
 {%if menu%}
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
   <div class="container-fluid">
-    <a class="navbar-brand" href="#">Админ панель</a>
+    <a class="navbar-brand" href="/{{session['name']}}">Моя визитка</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -20,49 +20,40 @@
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         {% for p in menu%}
         <li class="nav-item">
+          {%if p.url=="adminPanel.index"%}
+          <a class="nav-link" href="{{url_for(p.url)}}" data-bs-toggle="modal" data-bs-target="#AuthorizationModal">{{p.title}}</a>
+          {%else%}
           <a class="nav-link" href="{{url_for(p.url)}}">{{p.title}}</a>
+          {%endif%}
         </li>
          {%endfor%}
         </li>
-
       </ul>
     </div>
   </div>
 </nav>
 {%endif%}
+
+<!-- Модальное окно Удаление пользователя-->
 <div class="modal fade" id="AuthorizationModal" tabindex="-1" aria-labelledby="exampleModalLabelAuthorization"
     aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabelAuthorization">Авторизация</h5>
+          <h5 class="modal-title" id="exampleModalLabelAuthorization">Удаление пользователя</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
         </div>
         <div class="modal-body">
-          <form action="/login" method="post">
             <div class="mb-3">
-              <label for="AuthorizationInputEmail" class="form-label">Адрес электронной почты</label>
-              <input type="email" class="form-control" id="AuthorizationInputEmail" aria-describedby="AuthorizationEmailHelp" name="email"
-                required>
-              <div id="AuthorizationEmailHelp" class="form-text">Мы никогда никому не передадим вашу электронную почту.</div>
-            </div>
-            <div class="mb-3">
-              <label for="AuthorizationInputPassword" class="form-label">Пароль</label>
-              <input type="password" class="form-control" id="AuthorizationInputPassword" name="psw" required>
-            </div>
-            <div class="mb-3 form-check">
-              <input type="checkbox" class="form-check-input" id="AuthorizationCheck" name="remainme">
-              <label class="form-check-label" for="AuthorizationCheck">Запомни меня</label>
+              <div class="form-check-label">Вы уверены, что хотите удалить профиль?</div>
             </div>
             {% for cat,msg in get_flashed_messages(True) %}
                 <div class="flash {{cat}}">{{msg}}</div>
             {% endfor %}
             <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-bs-toggle="modal"
-                data-bs-target="#RegisterModal">Регистрация</button>
-              <button type="submit" class="btn btn-primary">Войти</button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Нет</button>
+              <button type="button" class="btn btn-primary" onclick="location.href='{{url_for('adminPanel.delete_current_user')}}'">Да</button>
             </div>
-          </form>
         </div>
       </div>
     </div>

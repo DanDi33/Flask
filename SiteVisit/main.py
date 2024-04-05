@@ -71,6 +71,13 @@ def get_avatar():
                 img = file.read()
         except FileNotFoundError as e:
             print(f"Файл аватара не найден. (main.py def get_avatar) {e}")
+            try:
+                with app.open_resource(app.root_path + url_for('static', filename='img/profile-image.jpg'),
+                                       "rb") as file:
+                    img = file.read()
+                    print(f"Успешно использован дефолтный аватар. (main.py def get_avatar)")
+            except FileNotFoundError as e:
+                print(f"Дефолтный аватар не найден. (main.py def get_avatar) {e}")
     return img
 
 

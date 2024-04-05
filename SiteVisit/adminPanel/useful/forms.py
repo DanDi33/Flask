@@ -1,9 +1,9 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileAllowed
-from wtforms import StringField, PasswordField, BooleanField, SubmitField
+from wtforms import StringField, SubmitField
 from wtforms.fields.choices import SelectField, RadioField
 from wtforms.fields.simple import TelField, TextAreaField, URLField, FileField
-from wtforms.validators import Email, DataRequired, Length, EqualTo, URL
+from wtforms.validators import Length, Regexp
 
 
 class ProfileForm(FlaskForm):
@@ -22,12 +22,19 @@ class ProfileForm(FlaskForm):
              ("twitch", "twitch"),
              ("yahoo", "yahoo"),
              ]
-    name = StringField("Имя", validators=[Length(min=2, max=25, message="Имя должно содержать от 2 до 25 "
-                                                                        "символов")], description="Ваше имя")
-    surname = StringField("Фамилия", validators=[Length(min=2, max=40, message="Фамилия должна содержать от 2 до 25 "
-                                                                               "символов")], description="Ваша фамилия")
+    name = StringField("Имя",
+                       validators=[Length(min=2, max=25, message="Имя должно содержать от 2 до 25 символов"),
+                                   Regexp('^[a-zA-Zа-яА-яёЁ]+$', message='Имя должно состоять только из букв '
+                                                                         'русского и латинского алфавита')],
+                       description="Ваше имя")
+    surname = StringField("Фамилия",
+                          validators=[Length(min=2, max=40, message="Фамилия должна содержать от 2 до 25 символов"),
+                                      Regexp('^[a-zA-Zа-яА-яёЁ]+$', message='Фамилия должно состоять только из букв '
+                                                                            'русского и латинского алфавита')],
+                          description="Ваша фамилия")
     avatar = FileField('Image', validators=[FileAllowed(['jpg', 'png', 'jpeg'], 'Images only!')])
-    phone = TelField("Мобильный номер", validators=[Length(min=10, max=10, message="Номер телефона содержит 10 цифр")],
+    phone = TelField("Мобильный номер", validators=[Length(min=10, max=10, message="Номер телефона содержит 10 цифр"),
+                                                    Regexp('^\\d+$', message='only digits')],
                      description="Введите номер телефона")
     profession = StringField("Профессия", validators=[Length(min=4, max=40, message="Профессия должна содержать от 4 "
                                                                                     "до 25 символов")],

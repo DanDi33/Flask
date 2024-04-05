@@ -92,3 +92,14 @@ list-style-type: none;
 margin-left:10px;
 margin-right:10px;
 }
+
+.invalid-feedback{
+    display: block !important;
+
+}
+
+.invalid{
+    border: 1px solid #FF4343;
+    background: #FF9C9C !important;
+    color:white !important;
+}

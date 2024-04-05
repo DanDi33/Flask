@@ -2,14 +2,15 @@ import os
 from PIL import Image
 
 import flask
-from flask import Blueprint, render_template, redirect, url_for, flash, session, g, json, make_response
+from flask import Blueprint, render_template, redirect, url_for, flash, session, g, json
 import sqlite3
 
 from werkzeug.utils import secure_filename
 from SiteVisit.adminPanel.useful.forms import ProfileForm
 
 admin = Blueprint('adminPanel', __name__, template_folder='templates', static_folder='static')
-menu = [{"url": ".index", "title": "Удалить профиль"}, {"url": "authorize.logout", "title": "Выйти"}]
+menu = [{"url": "adminPanel.index", "title": "Удалить профиль"},
+        {"url": "authorize.logout", "title": "Выйти"}]
 
 db = None
 
@@ -39,7 +40,7 @@ def index():
     profile = select_user(session['name'])
 
     if profile is None:
-        print(f"Профиль {session['name']} - не найден")
+        print(f"Профиль {session['name']} - не найден (adminPanel/admin.py def index).")
         return redirect(url_for('authorize.login'))
 
     social_out = json.loads(profile['social'])
@@ -96,7 +97,7 @@ def index():
                 return redirect(url_for('adminPanel.index'))
             except sqlite3.Error as e:
                 flash("Ошибка при добавлении в БД", category="error")
-                print("Ошибка добавления в БД" + str(e))
+                print("Ошибка добавления в БД." + str(e) + ". (adminPanel/admin.py def index).")
 
     return render_template("adminPanel/profile.html", title="Главная", menu=menu,
                            profile=profile, form=form, social=social_out)
@@ -122,11 +123,48 @@ def select_user(user_name):
     return None
 
 
+@admin.route("/delete_current_user", methods=["GET", "POST"])
+def delete_current_user():
+    if not isLogged():
+        return redirect(url_for('authorize.login'))
+
+    profile = select_user(session['name'])
+
+    if profile is None:
+        print(f"Профиль {session['name']} - не найден. (adminPanel/admin.py def delete_current_user).")
+        return redirect(url_for('authorize.login'))
+
+    avatar_file = f"uploads/{profile['avatar']}"
+
+    if os.path.isfile(avatar_file):
+        os.remove(avatar_file)
+        print("Файл (%s) успешно удален" % profile['avatar'])
+    else:
+        print("Файл (%s) не найден" % profile['avatar'])
+    if db:
+        try:
+            cur = db.cursor()
+            cur.execute(f"DELETE FROM profiles WHERE user_name = '{session['name']}';")
+            cur.execute(f"DELETE FROM users WHERE name = '{session['name']}';")
+            db.commit()
+            flash(f"Пользователь {session['name']} успешно удален", category="success")
+            print(f"Пользователь {session['name']} удален из БД. (adminPanel/admin.py def delete_current_user).")
+            return redirect(url_for('authorize.logout'))
+
+        except sqlite3.Error as e:
+            flash(f"Ошибка при удалении пользователя {session['name']} из БД", category="error")
+            print(f"Ошибка при удалении пользователя {session['name']} из БД." + str(e) + ". (adminPanel/admin.py "
+                                                                                          "def delete_current_user).")
+            return redirect(url_for('adminPanel.index'))
+    else:
+        flash(f"Ошибка соединения с БД", category="error")
+        print(f"Ошибка соединения с БД. (adminPanel/admin.py def delete_current_user).")
+        return redirect(url_for('adminPanel.index'))
+
+
 @admin.route("/userava")
 def userava():
-    print(f"user_ava ")
     profile = select_user(session['name'])
-    print(f"profile: avatar - {profile['avatar']},  name - {profile['name']}")
     img = None
     if not profile["avatar"]:
         try:
@@ -135,14 +173,22 @@ def userava():
                                                  "rb") as file:
                 img = file.read()
         except FileNotFoundError as e:
-            print(f"Дефолтный аватар не найден. (main.py def get_avatar) {e}")
+            print(f"Дефолтный аватар не найден. (adminPanel/admin.py  def userava) {e}")
     else:
         try:
             with flask.current_app.open_resource(flask.current_app.root_path + "/uploads/" + profile["avatar"],
                                                  "rb") as file:
                 img = file.read()
         except FileNotFoundError as e:
-            print(f"Файл аватара не найден. (main.py def get_avatar) {e}")
+            print(f"Файл аватара не найден. (adminPanel/admin.py  def userava) {e}")
+            try:
+                with flask.current_app.open_resource(flask.current_app.root_path +
+                                                     url_for('static', filename='img/profile-image.jpg'),
+                                                     "rb") as file:
+                    img = file.read()
+                    print(f"Успешно использован дефолтный аватар. (adminPanel/admin.py  def userava)")
+            except FileNotFoundError as e:
+                print(f"Дефолтный аватар не найден. (adminPanel/admin.py  def userava) {e}")
     return img
 
 
@@ -165,4 +211,5 @@ def crop_max_square(pil_img):
 
 
 def isLogged():
+    print(session)
     return True if session.get('name') else False
